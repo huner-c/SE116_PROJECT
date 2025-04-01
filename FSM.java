@@ -10,14 +10,15 @@ public class FSM
     static List<String> mainSymbols = new ArrayList<>();
     static String mainInitialState;
     static Set<String> mainFinalStates = new HashSet<>();
+    static List<String> mainStates = new ArrayList<>();
+    static Map<Map<String, String>, String> mainTransitions = new HashMap<>();
+
+
 
     public static void main(String[] args)
     {
         String logFileName = "everything.txt";
         dosyaOlustur(logFileName);
-
-
-
         StringBuilder insaat =  new StringBuilder();
         Scanner info = new Scanner(System.in);
         System.out.println("String insa et");
@@ -25,12 +26,10 @@ public class FSM
         {
             System.out.print("? ");
             String oAnkiLine = info.nextLine();
-            //satirYaz(oAnkiLine.replaceAll("\\s", ""));//s tum bosluk karakterlerini ifade eder
             insaat.append(oAnkiLine);
             if(oAnkiLine.contains(";"))
             {
                 System.out.println("; Tespit edildi");
-                //insaat = new StringBuilder(insaat.toString().replace(";", ""));
                 satirYaz(insaat.toString());
                 hub(insaat.toString());
                 insaat.setLength(0);
@@ -62,33 +61,83 @@ public class FSM
         }
         if(insaEdilmisString.contains("STATES") && !insaEdilmisString.contains("FINAL-STATES"))
         {
-            STATES();
+            STATES(insaEdilmisString);
         }
+        if(insaEdilmisString.contains("TRANSITIONS"))
+        {
+            TRANSITIONS(insaEdilmisString);
+        }
+
     }
 
+    public static void TRANSITIONS(String takeTransitionsFromHere)
+    {
+        int transtionSayisi =1;
+        for (char s : takeTransitionsFromHere.toCharArray())
+        {
+            if(s == (','))
+            {
+                transtionSayisi++;
+            }
+        }
+        System.out.println(transtionSayisi);
+
+        String[] fakeArray1 = takeTransitionsFromHere.split("TRANSITIONS",2);
+        String fakeString1 = fakeArray1[1].trim().replace(";","");
+        String[] fakeArray2 = fakeString1.split(", ");
+
+
+        System.out.println(Arrays.toString(fakeArray2));
+
+        String bir;
+        String iki;
+        String uc;
+
+        int wtf = 0;
+
+        for(String s : fakeArray2)
+        {
+            String[] dumassArray = s.split(" ");
+            System.out.println(Arrays.toString(dumassArray));
+            bir = dumassArray[0];
+            iki = dumassArray[1];
+            uc = dumassArray[2];
+            Map<String,String> onlyTransition = new HashMap<>();
+            onlyTransition.put(bir,iki);
+            mainTransitions.put(onlyTransition,uc);
+            wtf++;
+        }
+        System.out.println("Transitions eklendi");
+        System.out.println(mainTransitions);
+        System.out.println(wtf);
+    }
     public static void EXECUTE(){}
     public static void LOAD(){}
     public static void CLEAR(){}
     public static void COMPILE(){}
     public static void PRINT()
     {
-        System.out.println(mainSymbols);
-        System.out.println(mainInitialState);
-        System.out.println(mainFinalStates);
+        System.out.println("SYMBOLS: " + mainSymbols);
+        System.out.println("STATES: " + mainStates);
+        System.out.println("INITIAL STATE: " + mainInitialState);
+        System.out.println("FINAL STATES: " + mainFinalStates);
+        System.out.println("TRANSITIONS: ");
     }
-    public static void TRANSITIONS(){}
+
     public static void FINAL_STATES(String takeFStateFromHere)
     {
         String[] parts = takeFStateFromHere.split("FINAL-STATES");
         String sagTaraf = parts[1].trim().replace(";","");
         Set<String> fakeFStates = new HashSet<>(Arrays.asList(sagTaraf.split("\\s+")));
         mainFinalStates.addAll(fakeFStates);
+        mainStates.addAll(fakeFStates);
         System.out.println("Final Stateler Eklendi");
     }
     public static void INITIAL_STATE(String takeIStateFromHere)
     {
         String[] parts = takeIStateFromHere.split("INITIAL-STATE");
         mainInitialState = parts[1].replaceAll("\\s+", "").replace(";","");
+        mainStates.add(mainInitialState);
         System.out.println("Initial State Belirlendi");
     }
     public static void EXIT()
@@ -104,13 +153,23 @@ public class FSM
         List<String> fakeSymbols =  Arrays.asList(sagTaraf.split(" "));
         mainSymbols.addAll(fakeSymbols);
         System.out.println("Semboller eklendi");
-
     }
 
-    public static void STATES()
+    public static void STATES(String takeStatesFromHere)
     {
-        System.out.println(mainInitialState);
-        System.out.println(mainFinalStates);
+        if (takeStatesFromHere.contains(" "))
+        {
+            String[] parts = takeStatesFromHere.split("STATES",2);
+            String sagTaraf = parts[1].trim().replace(";","");
+            List<String> fakeStates =  Arrays.asList(sagTaraf.split(" "));
+            mainStates.addAll(fakeStates);
+            System.out.println("Stateler eklendi");
+        }
+        else
+        {
+            System.out.println(mainStates);
+        }
+
     }
 
     public static void satirYaz(String yazilacakSey)
