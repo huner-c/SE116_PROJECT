@@ -60,6 +60,10 @@ public class FSM
         {
             FINAL_STATES(insaEdilmisString);
         }
+        if(insaEdilmisString.contains("STATES") && !insaEdilmisString.contains("FINAL-STATES"))
+        {
+            STATES();
+        }
     }
 
     public static void EXECUTE(){}
@@ -103,7 +107,11 @@ public class FSM
 
     }
 
-    public static void STATES(){}
+    public static void STATES()
+    {
+        System.out.println(mainInitialState);
+        System.out.println(mainFinalStates);
+    }
 
     public static void satirYaz(String yazilacakSey)
     {

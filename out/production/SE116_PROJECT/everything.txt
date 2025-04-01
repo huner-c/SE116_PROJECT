@@ -1,0 +1,5 @@
+satestPRINT;
+EXIT;
+wtfexit'EXIT;
+INITIAL-STATE q1;
+FINAL-STATES q2 q3;
