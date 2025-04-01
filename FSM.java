@@ -33,7 +33,6 @@ public class FSM
                 satirYaz(insaat.toString());
                 hub(insaat.toString());
                 insaat.setLength(0);
-
             }
         }
     }
@@ -67,61 +66,93 @@ public class FSM
         {
             TRANSITIONS(insaEdilmisString);
         }
+        if(insaEdilmisString.contains("CLEAR"))
+        {
+            CLEAR();
+        }
+        if(insaEdilmisString.contains("EXECUTE"))
+        {
+            EXECUTE(insaEdilmisString);
+        }
 
+    }
+
+    public static void LOAD(){} // ilk once asadaki
+    public static void COMPILE(){} //bu napiyor mk
+    public static void LOG(){}
+
+    public static void EXECUTE(String takeSymbolsFromHere)
+    {
+        System.out.println("Executing...");
+        String[] parts = takeSymbolsFromHere.split("EXECUTE");
+        String executableSymbols = parts[1].replaceAll("\\s+", "").replace(";","");
+        String[] handleOnebyOne = executableSymbols.split("");
+
+        String curretState = mainInitialState;
+        Map<String,String> dumassTransition = new HashMap<>();
+
+
+        for (int i = 0; i < handleOnebyOne.length; i++)
+        {
+            dumassTransition.put(handleOnebyOne[i], curretState);
+            if(mainTransitions.get(dumassTransition) != null)
+            {
+                curretState = mainTransitions.get(dumassTransition);
+                dumassTransition.clear();
+                System.out.print(curretState+ " ");
+            }
+        }
+        if(mainFinalStates.contains(curretState))
+        {
+            System.out.print("YES");
+            System.out.println();
+        }
+        else
+        {
+            System.out.print("NO");
+            System.out.println();
+        }
     }
 
     public static void TRANSITIONS(String takeTransitionsFromHere)
     {
-        int transtionSayisi =1;
-        for (char s : takeTransitionsFromHere.toCharArray())
-        {
-            if(s == (','))
-            {
-                transtionSayisi++;
-            }
-        }
-        System.out.println(transtionSayisi);
-
         String[] fakeArray1 = takeTransitionsFromHere.split("TRANSITIONS",2);
         String fakeString1 = fakeArray1[1].trim().replace(";","");
         String[] fakeArray2 = fakeString1.split(", ");
-
-
-        System.out.println(Arrays.toString(fakeArray2));
 
         String bir;
         String iki;
         String uc;
 
-        int wtf = 0;
-
         for(String s : fakeArray2)
         {
             String[] dumassArray = s.split(" ");
-            System.out.println(Arrays.toString(dumassArray));
             bir = dumassArray[0];
             iki = dumassArray[1];
             uc = dumassArray[2];
             Map<String,String> onlyTransition = new HashMap<>();
             onlyTransition.put(bir,iki);
             mainTransitions.put(onlyTransition,uc);
-            wtf++;
         }
         System.out.println("Transitions eklendi");
         System.out.println(mainTransitions);
-        System.out.println(wtf);
     }
-    public static void EXECUTE(){}
-    public static void LOAD(){}
-    public static void CLEAR(){}
-    public static void COMPILE(){}
+    public static void CLEAR()
+    {
+        mainStates.clear();
+        mainFinalStates.clear();
+        mainSymbols.clear();
+        mainInitialState = null;
+        mainTransitions.clear();
+        System.out.println("Everything is swapped");
+    }
     public static void PRINT()
     {
         System.out.println("SYMBOLS: " + mainSymbols);
         System.out.println("STATES: " + mainStates);
         System.out.println("INITIAL STATE: " + mainInitialState);
         System.out.println("FINAL STATES: " + mainFinalStates);
-        System.out.println("TRANSITIONS: ");
+        System.out.println("TRANSITIONS: " + mainTransitions);
     }
 
     public static void FINAL_STATES(String takeFStateFromHere)
@@ -145,7 +176,7 @@ public class FSM
         System.out.println("TERMINATED BY USER");
         System.exit(0);
     }
-    public static void LOG(){}
+
     public static void SYMBOLS(String takeSymbolsFromHere)
     {
         String[] parts = takeSymbolsFromHere.split("SYMBOLS",2);
@@ -177,7 +208,7 @@ public class FSM
         try (FileWriter writer = new FileWriter("everything.txt", true))
         {
             writer.write(yazilacakSey + "\n");
-            System.out.println("Dosyaya başarıyla yazıldı!");
+            //System.out.println("Dosyaya başarıyla yazıldı!");
         } catch (IOException ex) {
             System.err.println("Dosyaya yazarken hata oluştu: ");
             ex.printStackTrace();
@@ -201,6 +232,4 @@ public class FSM
             e.printStackTrace();
         }
     }
-
-
 }
