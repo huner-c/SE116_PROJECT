@@ -1,24 +1,23 @@
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-public class FSM
+public class FSM implements Serializable
 {
     static List<String> mainSymbols = new ArrayList<>();
     static String mainInitialState;
     static Set<String> mainFinalStates = new HashSet<>();
     static List<String> mainStates = new ArrayList<>();
     static Map<Map<String, String>, String> mainTransitions = new HashMap<>();
-
-
+    static boolean isLogging;
+    static String logFileName;
 
     public static void main(String[] args)
     {
-        String logFileName = "everything.txt";
-        dosyaOlustur(logFileName);
+        //String logFileName = "everything.txt";
+        //dosyaOlustur(logFileName);
         StringBuilder insaat =  new StringBuilder();
         Scanner info = new Scanner(System.in);
         System.out.println("String insa et");
@@ -30,7 +29,10 @@ public class FSM
             if(oAnkiLine.contains(";"))
             {
                 System.out.println("; Tespit edildi");
-                satirYaz(insaat.toString());
+                if(isLogging)
+                {
+                    satirYaz(insaat.toString());
+                }
                 hub(insaat.toString());
                 insaat.setLength(0);
             }
@@ -74,24 +76,62 @@ public class FSM
         {
             EXECUTE(insaEdilmisString);
         }
+        if(insaEdilmisString.contains("LOG"))
+        {
+            LOG(insaEdilmisString);
+        }
+        if(insaEdilmisString.contains("COMPILE"))
+        {
+            COMPILE(insaEdilmisString);
+        }
+        if(insaEdilmisString.contains("LOAD"))
+        {
+            LOAD(insaEdilmisString);
+        }
+    }
+
+    public static void LOAD(String takeCommandFromHere) //Ain't no way
+    {
+
+    }
+    public static void COMPILE(String takeCommandFromHere) //Ain't no way
+    {
 
     }
 
-    public static void LOAD(){} // ilk once asadaki
-    public static void COMPILE(){} //bu napiyor mk
-    public static void LOG(){}
+    public static void LOG(String TakeLogFileNameFromHere)
+    {
+        if(TakeLogFileNameFromHere.contains(" ")) //file name ile girildi ise
+        {
+            String[] parts = TakeLogFileNameFromHere.split("LOG");
+            String sagTaraf = parts[1].trim().replace(";","");
+            dosyaOlustur(sagTaraf);
+            logFileName = sagTaraf;
+            isLogging = true;
+            System.out.println("Logging is enabled");
+        }
+        else //tek basina girildi ise
+        {
+            if(isLogging) //true ise
+            {
+                System.out.println("Logging is stopped");
+                isLogging = false;
 
+            }
+            else //false ise
+            {
+                System.out.println("LOGGING was not enabled");
+            }
+        }
+    }
     public static void EXECUTE(String takeSymbolsFromHere)
     {
         System.out.println("Executing...");
         String[] parts = takeSymbolsFromHere.split("EXECUTE");
         String executableSymbols = parts[1].replaceAll("\\s+", "").replace(";","");
         String[] handleOnebyOne = executableSymbols.split("");
-
         String curretState = mainInitialState;
         Map<String,String> dumassTransition = new HashMap<>();
-
-
         for (int i = 0; i < handleOnebyOne.length; i++)
         {
             dumassTransition.put(handleOnebyOne[i], curretState);
@@ -126,10 +166,10 @@ public class FSM
 
         for(String s : fakeArray2)
         {
-            String[] dumassArray = s.split(" ");
-            bir = dumassArray[0];
-            iki = dumassArray[1];
-            uc = dumassArray[2];
+            String[] Array = s.split(" ");
+            bir = Array[0];
+            iki = Array[1];
+            uc = Array[2];
             Map<String,String> onlyTransition = new HashMap<>();
             onlyTransition.put(bir,iki);
             mainTransitions.put(onlyTransition,uc);
@@ -205,7 +245,7 @@ public class FSM
 
     public static void satirYaz(String yazilacakSey)
     {
-        try (FileWriter writer = new FileWriter("everything.txt", true))
+        try (FileWriter writer = new FileWriter(FSM.logFileName, true))
         {
             writer.write(yazilacakSey + "\n");
             //System.out.println("Dosyaya başarıyla yazıldı!");
@@ -224,6 +264,15 @@ public class FSM
         }
         catch (FileAlreadyExistsException e) //eger bu hatayi alirsan git tekrardan ayni dosyayi ac dedim
         {
+            try
+            {
+                Files.writeString(Path.of(logFileName), "");
+                System.out.println("Dosyan zaten mevcuttu icerigini sildim Dosyan hazir");
+            }
+            catch (IOException ex)
+            {
+                throw new RuntimeException(ex);
+            }
             System.out.println("Dosyan hazir");
         }
         catch (IOException e) {

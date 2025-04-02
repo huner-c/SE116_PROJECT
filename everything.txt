@@ -206,3 +206,6 @@ STATES Q0;
 STATES;
 PRINT;
 EXECUTE 123;
+LOG patates;
+LOG patates;
+LOG patates.txt;

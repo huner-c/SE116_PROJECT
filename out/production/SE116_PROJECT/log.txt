@@ -1,0 +1,11 @@
+SYMBOLS a b c d;
+STATES q0 q1 q2 q3;
+INITIAL-STATE q0;
+FINAL-STATES q3;
+TRANSITIONS a q0 q1, b q1 q2, c q2 q3;
+COMPILE fsm.fs;
+PRINT;
+CLEAR;
+PRINT;
+LOAD fsm.fs;
+PRINT;
