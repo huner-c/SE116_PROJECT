@@ -13,6 +13,7 @@ public class FSM implements Serializable
     static Map<Map<String, String>, String> mainTransitions = new HashMap<>();
     static boolean isLogging;
     static String logFileName;
+    static String updateTest;
 
     public static void main(String[] args)
     {
