@@ -16,8 +16,6 @@ public class FSM implements Serializable
 
     public static void main(String[] args)
     {
-        //String logFileName = "everything.txt";
-        //dosyaOlustur(logFileName);
         StringBuilder insaat =  new StringBuilder();
         Scanner info = new Scanner(System.in);
         System.out.println("String insa et");
@@ -38,7 +36,7 @@ public class FSM implements Serializable
             }
         }
     }
-    public static void  hub(String insaEdilmisString)
+    public static void hub(String insaEdilmisString)
     {
         if(insaEdilmisString.contains("EXIT"))
         {
@@ -240,9 +238,7 @@ public class FSM implements Serializable
         {
             System.out.println(mainStates);
         }
-
     }
-
     public static void satirYaz(String yazilacakSey)
     {
         try (FileWriter writer = new FileWriter(FSM.logFileName, true))
