@@ -8,6 +8,10 @@ public class Main {
     static boolean kayıt=false;
     static ArrayList<String> FR4list=new ArrayList<>();//response eklendiği yer
 
+    // fsm için gerekli ek değişkenler(fr7 için)
+    static String initialState = "";
+    static ArrayList<String> statesList = new ArrayList<>();
+
 
     public static void main(String[] args) {
         Scanner sc=new Scanner(System.in);
@@ -109,7 +113,25 @@ public class Main {
     public static void FR5_2(){}
     public static void FR6(){}
     public static void FR6_2(){}
-    public static void FR7(){}
+    
+    public static void FR7(){
+         String state = akmoutdizisi[1];
+
+        if (!state.matches("[a-zA-Z0-9]+")) {
+            System.out.println("Warning: state is not alphanumeric");
+            fr4ekleme("Warning: state is not alphanumeric");
+            return;
+        }
+
+        if (!statesList.contains(state)) {
+            statesList.add(state);
+            System.out.println("Warning: state has not been declared yet, added to list");
+            fr4ekleme("Warning: state has not been declared yet, added to list");
+        }
+
+        initialState = state;
+    }
+    
     public static void FR8(){}
     public static void FR9(){}
     public static void FR10(){}
