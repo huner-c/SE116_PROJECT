@@ -25,6 +25,11 @@ public class Main
     static String initialState = "";
     static ArrayList<String> statesList = new ArrayList<>();
 
+    //fr10 için ek değişkenler
+    static ArrayList<String> symbolsList = new ArrayList<>();
+    static ArrayList<String> finalStates = new ArrayList<>();
+    static ArrayList<String> transitionsList = new ArrayList<>();
+
 
     public static void main(String[] args)
     {
@@ -159,8 +164,11 @@ public class Main
     public static void FR9(){}
     public static void FR10()
     {
-        System.out.println(initialState);
-        System.out.println(statesList);
+        System.out.println("SYMBOLS: " + symbolsList);
+        System.out.println("STATES: " + statesList);
+        System.out.println("INITIAL STATE: " + initialState);
+        System.out.println("FINAL STATES: " + finalStates);
+        System.out.println("TRANSITIONS: " + transitionsList);
     }
     public static void FR11(String fileName) // COMPILE
     {
