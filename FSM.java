@@ -1,23 +1,29 @@
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 class FSMDatas implements Serializable
 {
     String initialState;
     ArrayList<String> statesList;
+    ArrayList<String> symbolsList;
+    ArrayList<String> finalStates;
+    ArrayList<String> transitionsList;
 
-    public FSMDatas(String initialState, ArrayList<String> statesList )
+    public FSMDatas(String initialState, ArrayList<String> statesList, ArrayList<String> symbolsList, ArrayList<String> finalStates, ArrayList<String> transitionsList)
     {
         this.initialState = initialState;
         this.statesList = statesList;
+        this.symbolsList = symbolsList;
+        this.finalStates = finalStates;
+        this.transitionsList = transitionsList;
     }
 }
-
-
 public class Main
 {
-    static String girilenkomut="";
-    static String[]akmoutdizisi=null;
+    static String commandEntered="";
+    static String[] commandArray =null;
     static boolean kayıt=false;
     static ArrayList<String> FR4list=new ArrayList<>();//response eklendiği yer
 
@@ -38,91 +44,91 @@ public class Main
     public static void codeExoskeleton()
     {
         Scanner sc = new Scanner(System.in);
-        StringBuilder insaat = new StringBuilder(); // Çok satırlı komutları birleştirmek için
+        StringBuilder builder = new StringBuilder(); // Çok satırlı komutları birleştirmek için
         while (true)
         {
             System.out.print("? ");
-            String oAnkiLine = sc.nextLine();
-            insaat.append(oAnkiLine);
+            String currentLine = sc.nextLine();
+            builder.append(currentLine);
 
-            if (oAnkiLine.contains(";"))
+            if (currentLine.contains(";"))
             {
-                girilenkomut = insaat.toString();
-                girilenkomut = girilenkomut.replaceAll("\n", " ");
-                girilenkomut = girilenkomut.split(";", 2)[0].trim();
-                akmoutdizisi = girilenkomut.split(" ");
-                yönlendirme();
-                insaat.setLength(0);
+                commandEntered = builder.toString();
+                commandEntered = commandEntered.replaceAll("\n", " ");
+                commandEntered = commandEntered.split(";", 2)[0].trim();
+                commandArray = commandEntered.split(" ");
+                hub();
+                builder.setLength(0);
             }
         }
 
     }
 
-    public static void yönlendirme()
+    public static void hub()
     {
-        System.out.println(Arrays.toString(akmoutdizisi));
+        System.out.println(Arrays.toString(commandArray));
 
-        if(akmoutdizisi.length>=2)
+        if(commandArray.length>=2)
         {
-            String[] fr4kelime2dizisi = akmoutdizisi[1].split("");
+            String[] fr4kelime2dizisi = commandArray[1].split("");
 
-            if(akmoutdizisi[0].equals("LOG") && akmoutdizisi[1].startsWith("<") && akmoutdizisi[1].endsWith(">")){
-                FR4(fr4kelime2dizisi);
+            if(commandArray[0].equals("LOG") && commandArray[1].startsWith("<") && commandArray[1].endsWith(">")){
+                LOG(fr4kelime2dizisi);
             }
-            else if (akmoutdizisi[0].equals("SYMBOLS")) {
-                FR5();
+            else if (commandArray[0].equals("SYMBOLS")) {
+                SYMBOLS();
             }
-            else if (akmoutdizisi[0].equals("STATES")){
-                FR6();
+            else if (commandArray[0].equals("STATES")){
+                STATES();
             }
-            else if(akmoutdizisi[0].equals("INITIAL-STATE") && akmoutdizisi.length==2){
-                FR7();
+            else if(commandArray[0].equals("INITIAL-STATE") && commandArray.length==2){
+                INITIAL_STATE();
             }
-            else if(akmoutdizisi[0].equals("FINAL-STATES")){
-                FR8();
+            else if(commandArray[0].equals("FINAL-STATES")){
+                FINAL_STATES();
             }
-            else if(akmoutdizisi[0].equals("TRANSITIONS")){
-                FR9();
+            else if(commandArray[0].equals("TRANSITIONS")){
+                TRANSITIONS();
             }
-            else if (akmoutdizisi[0].equals("PRINT") && akmoutdizisi.length==2){
-                FR10();
+            else if (commandArray[0].equals("PRINT") && commandArray.length==2){
+                PRINT();
             }
-            else if(akmoutdizisi[0].equals("COMPILE")&& akmoutdizisi.length==2)
+            else if(commandArray[0].equals("COMPILE")&& commandArray.length==2)
             {
-                FR11(akmoutdizisi[1]);
+                COMPILE(commandArray[1]);
             }
-            else if(akmoutdizisi[0].equals("LOAD")&& akmoutdizisi.length==2){
-                FR13(akmoutdizisi[1]);
+            else if(commandArray[0].equals("LOAD")&& commandArray.length==2){
+                LOAD(commandArray[1]);
             }
-            else if(akmoutdizisi[0].equals("EXECUTE")){
-                FR14();
+            else if(commandArray[0].equals("EXECUTE")){
+                EXECUTE();
             }
             else {
                 System.out.println("invalid comment");
                 fr4ekleme("invalid comment");
             }
         }else{
-            if (girilenkomut.equals("")) {
-                FR1();
+            if (commandEntered.equals("")) {
+                VERSION_CONTROL();
             }
-            else if (girilenkomut.equals("EXIT")) {
-                FR3();
+            else if (commandEntered.equals("EXIT")) {
+                EXIT();
             }
-            else if (girilenkomut.equals("LOG")) {
-                FR4_2();
+            else if (commandEntered.equals("LOG")) {
+                LOG_();
             }
-            else if (girilenkomut.equals("SYMBOLS")) {
-                FR5_2();
+            else if (commandEntered.equals("SYMBOLS")) {
+                SYMBOLS_();
             }
-            else if (girilenkomut.equals("STATES")) {
-                FR6_2();
+            else if (commandEntered.equals("STATES")) {
+                STATES_();
             }
-            else if (girilenkomut.equals("CLEAR")) {
-                FR12();
+            else if (commandEntered.equals("CLEAR")) {
+                CLEAR();
             }
-            else if (girilenkomut.equals("PRINT"))
+            else if (commandEntered.equals("PRINT"))
             {
-                FR10();
+                PRINT();
             }
             else{
                 System.out.println("invalid comment");
@@ -130,23 +136,26 @@ public class Main
             }
         }
     }
-
-    //KODUNUZU AŞŞAĞIDAKİ İLGİLİ FR KISMINA  YAZABİLİRSİNİZ
-    //KULLANICAIDAN ALDIGIMIZ GİRDİ girilenkomut olarak alınıyor
-    //LİST,MAP,SET VS HERHANGİ BİR ŞEY EKLEMEK İSTEDİĞİNİZDE Public Class Main in HEMEN AŞŞAĞISINA STATİC OLARAK EKLEYEBİLİRSİNİZ
-    //LAZIM OLDUGUNDA EKSTRA METHODDA EKLEYEBİLİRSİNİZ AŞŞAĞI KISMA
-
-    public static void FR1(){}
-    public static void FR3(){}
-    public static void FR4(String[] a){}
-    public static void FR4_2(){}
-    public static void FR5(){}
-    public static void FR5_2(){}
-    public static void FR6(){}
-    public static void FR6_2(){}
-
-    public static void FR7(){
-        String state = akmoutdizisi[1];
+    public static void VERSION_CONTROL()//fr1
+    {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDateTime = now.format(formatter);
+        System.out.println("FSM DESIGNER <3.0beta A>  "+formattedDateTime);
+    }
+    public static void EXIT() //EXIT A     //fr3
+    {
+        System.out.println("TERMINATED BY USER");
+        System.exit(0);
+    }
+    public static void LOG(String[] a){}//fr4
+    public static void LOG_(){}//fr4
+    public static void SYMBOLS(){}//fr5
+    public static void SYMBOLS_(){}//fr
+    public static void STATES(){}//fr6
+    public static void STATES_(){}//fr6
+    public static void INITIAL_STATE(){
+        String state = commandArray[1];
 
         if (!state.matches("[a-zA-Z0-9]+")) {
             System.out.println("Warning: state is not alphanumeric");
@@ -160,9 +169,9 @@ public class Main
         }
         initialState = state;
     }
-    public static void FR8(){}
-    public static void FR9(){}
-    public static void FR10()
+    public static void FINAL_STATES(){}//fr8
+    public static void TRANSITIONS(){}//fr9
+    public static void PRINT()//fr10
     {
         System.out.println("SYMBOLS: " + symbolsList);
         System.out.println("STATES: " + statesList);
@@ -170,36 +179,36 @@ public class Main
         System.out.println("FINAL STATES: " + finalStates);
         System.out.println("TRANSITIONS: " + transitionsList);
     }
-    public static void FR11(String fileName) // COMPILE
+    public static void COMPILE(String fileName)//fr11
     {
-        System.out.println("compile metot calisiyor");
-
-        FSMDatas data = new FSMDatas(initialState,statesList);
+        FSMDatas data = new FSMDatas(initialState,statesList,symbolsList,finalStates,transitionsList);
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName)))
         {
             out.writeObject(data);
-            System.out.println("Veriler serileştirildi ve " + fileName + " dosyasına yazıldı.");
+            System.out.println("Datas are serialized and to " + fileName + " written.");
         }
         catch (IOException e)
         {
             e.printStackTrace();
         }
     }
-    public static void FR12(){}
-    public static void FR13(String fileName) //LOAD
+    public static void CLEAR(){}//fr12
+    public static void LOAD(String fileName)//fr13
     {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName)))
+        {
             FSMDatas data = (FSMDatas) in.readObject();
             initialState = data.initialState;
             statesList = data.statesList;
-            System.out.println("Veriler " + fileName + " dosyasından yüklendi.");
+            System.out.println("Datas are to " + fileName + " written");
         }
         catch (ClassNotFoundException | IOException e)
         {
             e.printStackTrace();
         }
     }
-    public static void FR14(){}
+    public static void EXECUTE(){}//fr14
+    //FR 15
 
     public static void fr4ekleme(String a){
         if(kayıt){
