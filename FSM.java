@@ -230,6 +230,9 @@ public class Main
             FSMDatas data = (FSMDatas) in.readObject();
             initialState = data.initialState;
             statesList = data.statesList;
+            symbolsList = data.symbolsList;
+            finalStates = data.finalStates;
+            transitionsList = data.transitionsList;
             System.out.println("Datas are to " + fileName + " written");
         }
         catch (ClassNotFoundException | IOException e)
