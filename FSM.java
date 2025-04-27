@@ -24,6 +24,9 @@ public class Main
 {
     static String commandEntered="";
     static String[] commandArray =null;
+
+    //fr4 için ek kısımlar
+    static Formatter f_fr4=null;
     static boolean kayıt=false;
     static ArrayList<String> FR4list=new ArrayList<>();//response eklendiği yer
     static String dosyaAdı="";
@@ -154,7 +157,26 @@ public class Main
         kayıt = true;
         FR4list.clear();
     }//fr4
-    public static void LOG_(){}//fr4
+    public static void LOG_(){
+        try {
+            f_fr4 = new Formatter(dosyaAdı+".txt");
+            for (String aa:FR4list){
+                f_fr4.format("%s \n", aa);
+            }
+            System.out.println("yazıldı");
+        } catch (Exception e) {
+            System.out.println("LOGGING was not enabled");
+            System.out.println("file cannot be created, written, etc");
+            System.out.println(e.getMessage());
+            fr4ekleme("file cannot be created, written, etc");
+        }finally {
+            if(f_fr4!=null){
+                System.out.println("STOPPED LOGGING");
+                fr4ekleme("STOPPED LOGGING");
+                f_fr4.close();
+            }
+        }
+    }//fr4
     public static void SYMBOLS(){}//fr5
     public static void SYMBOLS_(){}//fr
     public static void STATES(){}//fr6
