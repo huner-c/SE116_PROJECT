@@ -26,6 +26,7 @@ public class Main
     static String[] commandArray =null;
     static boolean kayıt=false;
     static ArrayList<String> FR4list=new ArrayList<>();//response eklendiği yer
+    static String dosyaAdı="";
 
     // fsm için gerekli ek değişkenler(fr7 için)
     static String initialState = "";
@@ -73,7 +74,8 @@ public class Main
             String[] fr4kelime2dizisi = commandArray[1].split("");
 
             if(commandArray[0].equals("LOG") && commandArray[1].startsWith("<") && commandArray[1].endsWith(">")){
-                LOG(fr4kelime2dizisi);
+                osyaAdı=commandArray[1].substring(1,commandArray[1].length()-1);
+                LOG();
             }
             else if (commandArray[0].equals("SYMBOLS")) {
                 SYMBOLS();
@@ -148,7 +150,10 @@ public class Main
         System.out.println("TERMINATED BY USER");
         System.exit(0);
     }
-    public static void LOG(String[] a){}//fr4
+    public static void LOG(){
+        kayıt = true;
+        FR4list.clear();
+    }//fr4
     public static void LOG_(){}//fr4
     public static void SYMBOLS(){}//fr5
     public static void SYMBOLS_(){}//fr
