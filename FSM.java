@@ -86,7 +86,7 @@ public class Main
             String[] fr4kelime2dizisi = commandArray[1].split("");
 
             if(commandArray[0].equals("LOG") && commandArray[1].startsWith("<") && commandArray[1].endsWith(">")){
-                osyaAdı=commandArray[1].substring(1,commandArray[1].length()-1);
+                dosyaAdı=commandArray[1].substring(1,commandArray[1].length()-1);
                 LOG();
             }
             else if (commandArray[0].equals("SYMBOLS")) {
@@ -187,37 +187,37 @@ public class Main
         }
     }//fr4
     public static void SYMBOLS(){
-        for (int i = 1; i < akmoutdizisi.length; i++) {
+        for (int i = 1; i < commandArray.length; i++) {
             boolean alfanumerikmi = false;
             boolean zatenvarmı = false;
-            System.out.println("araştırılan : " + akmoutdizisi[i].toUpperCase());
+            System.out.println("araştırılan : " + commandArray[i].toUpperCase());
             for (String aa : alfanumerikdizi) {//alfanmerik mi diye baktık
-                if (aa.equals(akmoutdizisi[i].toUpperCase())) {
+                if (aa.equals(commandArray[i].toUpperCase())) {
                     alfanumerikmi = true;
                     break;
                 }
             }
             if (alfanumerikmi) {
                 if (symbolslist.isEmpty()) {
-                    symbolslist.add(akmoutdizisi[i].toUpperCase());
-                    System.out.println("eklendi: " + akmoutdizisi[i].toUpperCase());
+                    symbolslist.add(commandArray[i].toUpperCase());
+                    System.out.println("eklendi: " + commandArray[i].toUpperCase());
                 } else {
                     for (String aa : symbolslist) {
-                        if (aa.equals(akmoutdizisi[i].toUpperCase())) {
-                            System.out.println("daha önceden eklenmiş : " + akmoutdizisi[i].toUpperCase());
-                            fr4ekleme("daha önceden eklenmiş : " + akmoutdizisi[i].toUpperCase());
+                        if (aa.equals(commandArray[i].toUpperCase())) {
+                            System.out.println("daha önceden eklenmiş : " + commandArray[i].toUpperCase());
+                            fr4ekleme("daha önceden eklenmiş : " + commandArray[i].toUpperCase());
                             zatenvarmı = true;
                             break;
                         }
                     }
                     if (!zatenvarmı) {
-                        symbolslist.add(akmoutdizisi[i].toUpperCase());
-                        System.out.println("eklendi : " + akmoutdizisi[i].toUpperCase());
+                        symbolslist.add(commandArray[i].toUpperCase());
+                        System.out.println("eklendi : " + commandArray[i].toUpperCase());
                     }
                 }
             } else {
-                System.out.println("alfanumerik değil : " + akmoutdizisi[i].toUpperCase());
-                fr4ekleme("alfanumerik değil : " + akmoutdizisi[i].toUpperCase());
+                System.out.println("alfanumerik değil : " + commandArray[i].toUpperCase());
+                fr4ekleme("alfanumerik değil : " + commandArray[i].toUpperCase());
             }
         }
     }//fr5
