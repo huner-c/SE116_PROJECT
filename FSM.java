@@ -31,6 +31,15 @@ public class Main
     static ArrayList<String> FR4list=new ArrayList<>();//response eklendiği yer
     static String dosyaAdı="";
 
+    //fr5 için ek kısımlar
+    static String buyukharfler="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    static String rakamlar="0123456789";
+    static String[] harflerdızı=buyukharfler.split("");
+    static String[]rakamlardızı=rakamlar.split("");
+    static String alfanumaerik=buyukharfler+rakamlar;
+    static String[] alfanumerikdizi=alfanumaerik.split("");
+    static ArrayList<String>symbolslist=new ArrayList<>();
+
     // fsm için gerekli ek değişkenler(fr7 için)
     static String initialState = "";
     static ArrayList<String> statesList = new ArrayList<>();
@@ -177,7 +186,41 @@ public class Main
             }
         }
     }//fr4
-    public static void SYMBOLS(){}//fr5
+    public static void SYMBOLS(){
+        for (int i = 1; i < akmoutdizisi.length; i++) {
+            boolean alfanumerikmi = false;
+            boolean zatenvarmı = false;
+            System.out.println("araştırılan : " + akmoutdizisi[i].toUpperCase());
+            for (String aa : alfanumerikdizi) {//alfanmerik mi diye baktık
+                if (aa.equals(akmoutdizisi[i].toUpperCase())) {
+                    alfanumerikmi = true;
+                    break;
+                }
+            }
+            if (alfanumerikmi) {
+                if (symbolslist.isEmpty()) {
+                    symbolslist.add(akmoutdizisi[i].toUpperCase());
+                    System.out.println("eklendi: " + akmoutdizisi[i].toUpperCase());
+                } else {
+                    for (String aa : symbolslist) {
+                        if (aa.equals(akmoutdizisi[i].toUpperCase())) {
+                            System.out.println("daha önceden eklenmiş : " + akmoutdizisi[i].toUpperCase());
+                            fr4ekleme("daha önceden eklenmiş : " + akmoutdizisi[i].toUpperCase());
+                            zatenvarmı = true;
+                            break;
+                        }
+                    }
+                    if (!zatenvarmı) {
+                        symbolslist.add(akmoutdizisi[i].toUpperCase());
+                        System.out.println("eklendi : " + akmoutdizisi[i].toUpperCase());
+                    }
+                }
+            } else {
+                System.out.println("alfanumerik değil : " + akmoutdizisi[i].toUpperCase());
+                fr4ekleme("alfanumerik değil : " + akmoutdizisi[i].toUpperCase());
+            }
+        }
+    }//fr5
     public static void SYMBOLS_(){}//fr
     public static void STATES(){}//fr6
     public static void STATES_(){}//fr6
