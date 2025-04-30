@@ -228,55 +228,32 @@ public class Main
         }
         System.out.println("******* SYMBOLS LİST *******");
     }
-    public static void STATES(String[] gelendizi ){
-        for (int i = 1; i < gelendizi.length; i++) {
-            boolean stateilkdogrumu=false;
-            boolean stateikidogrumu=false;
-            boolean zatenvar=false;
-            String[]fr6kelimeler=gelendizi[i].split("");
-            if(fr6kelimeler.length!=2){
-                System.out.println(gelendizi[i]+"  uzunluk hatası");
-                continue;
-            }
-            for(String aa:harflerdızı){
-                if(aa.equals(fr6kelimeler[0].toUpperCase())){
-                    stateilkdogrumu=true;
-                    break;
+    public static void STATES(String[] incomingArray ){
+       for(int i=1;i< incomingArray.length;i++){
+            if(isalphanumeric(incomingArray[i].toUpperCase())){
+                if(statesList.isEmpty()){
+                    statesList.add(incomingArray[i].toUpperCase());
+                    System.out.println(incomingArray[i]+" eklendi");
+                    initialState=incomingArray[i].toUpperCase();
+                    System.out.println(incomingArray[i].toUpperCase()+" ınıtıal state olarak ayarlandı ");
+                    continue;
                 }
-            }
-            if(!stateilkdogrumu){
-                System.out.println("state ilk harf degıl");
-                continue;
-            }
-            for(String aa:rakamlardızı){
-                if(aa.equals(fr6kelimeler[1])){
-                    stateikidogrumu=true;
-                    break;
-                }
-            }
-            if(!stateikidogrumu){
-                System.out.println("state 2 rakam değil");
-                continue;
-            }
-            if(statesList.isEmpty()){
-                statesList.add(gelendizi[i].toUpperCase());
-                System.out.println("eklendi "+gelendizi[i].toUpperCase());
-            }else{
+                boolean varmıydı=false;
                 for(String aa:statesList){
-                    if(gelendizi[i].toUpperCase().equals(aa)){
-                        zatenvar=true;
+                    if(aa.equals(incomingArray[i].toUpperCase())){
+                        varmıydı=true;
                         break;
                     }
                 }
-                if(zatenvar){
-                    System.out.println("zaten var "+gelendizi[i].toUpperCase());
-                }else{
-                    statesList.add(gelendizi[i].toUpperCase());
-                    System.out.println("eklendi "+gelendizi[i].toUpperCase());
+                if(varmıydı){
+                    System.out.println(incomingArray[i].toUpperCase()+" zaten var");
+                    continue;
                 }
+                statesList.add(incomingArray[i].toUpperCase());
+                System.out.println(incomingArray[i]+" eklendi");
+            }else{
+                System.out.println(incomingArray[i]+" alfanumerik değil");
             }
-
-
         }
     }//fr6
     public static void STATES_(){}//fr6
