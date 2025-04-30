@@ -212,11 +212,11 @@ public class Main
                 }
             }
             if (alfanumerikmi) {
-                if (symbolslist.isEmpty()) {
-                    symbolslist.add(commandArray[i].toUpperCase());
+                if (symbolsList.isEmpty()) {
+                    symbolsList.add(commandArray[i].toUpperCase());
                     System.out.println("eklendi: " + commandArray[i].toUpperCase());
                 } else {
-                    for (String aa : symbolslist) {
+                    for (String aa : symbolsList) {
                         if (aa.equals(commandArray[i].toUpperCase())) {
                             System.out.println("daha önceden eklenmiş : " + commandArray[i].toUpperCase());
                             fr4ekleme("daha önceden eklenmiş : " + commandArray[i].toUpperCase());
@@ -225,7 +225,7 @@ public class Main
                         }
                     }
                     if (!zatenvarmı) {
-                        symbolslist.add(commandArray[i].toUpperCase());
+                        symbolsList.add(commandArray[i].toUpperCase());
                         System.out.println("eklendi : " + commandArray[i].toUpperCase());
                     }
                 }
@@ -237,7 +237,7 @@ public class Main
     }//fr5
     public static void SYMBOLS_(){
         System.out.println("******* SYMBOLS LİST *******");
-        for(String aa:symbolslist){
+        for(String aa:symbolsList){
             System.out.println(aa);
         }
         System.out.println("******* SYMBOLS LİST *******");
