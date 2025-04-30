@@ -235,7 +235,13 @@ public class Main
             }
         }
     }//fr5
-    public static void SYMBOLS_(){}//fr
+    public static void SYMBOLS_(){
+        System.out.println("******* SYMBOLS LİST *******");
+        for(String aa:symbolslist){
+            System.out.println(aa);
+        }
+        System.out.println("******* SYMBOLS LİST *******");
+    }//fr
     public static void STATES(String[] gelendizi ){
         for (int i = 1; i < gelendizi.length; i++) {
             boolean stateilkdogrumu=false;
