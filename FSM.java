@@ -38,11 +38,8 @@ public class Main
     static String[]rakamlardızı=rakamlar.split("");
     static String alfanumaerik=buyukharfler+rakamlar;
     static String[] alfanumerikdizi=alfanumaerik.split("");
-    static ArrayList<String> symbolslist = new ArrayList<>();
 
-    //FR6 için ek kısımlar
-    static ArrayList<String> stateslist = new ArrayList<>();
-
+    
     // fsm için gerekli ek değişkenler(fr7 için)
     static String initialState = "";
     static ArrayList<String> statesList = new ArrayList<>();
@@ -272,11 +269,11 @@ public class Main
                 System.out.println("state 2 rakam değil");
                 continue;
             }
-            if(stateslist.isEmpty()){
-                stateslist.add(gelendizi[i].toUpperCase());
+            if(statesList.isEmpty()){
+                statesList.add(gelendizi[i].toUpperCase());
                 System.out.println("eklendi "+gelendizi[i].toUpperCase());
             }else{
-                for(String aa:stateslist){
+                for(String aa:statesList){
                     if(gelendizi[i].toUpperCase().equals(aa)){
                         zatenvar=true;
                         break;
@@ -285,7 +282,7 @@ public class Main
                 if(zatenvar){
                     System.out.println("zaten var "+gelendizi[i].toUpperCase());
                 }else{
-                    stateslist.add(gelendizi[i].toUpperCase());
+                    statesList.add(gelendizi[i].toUpperCase());
                     System.out.println("eklendi "+gelendizi[i].toUpperCase());
                 }
             }
