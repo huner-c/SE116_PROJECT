@@ -379,21 +379,6 @@ public class Main
             FR4list.add(a);
         }
     }
-}
-class InvalidFileNameException extends Exception
-{
-    public InvalidFileNameException(String message)
-    {
-        super(message);
-    }
-}
-
-class FileCreationException extends Exception
-{
-    public FileCreationException(String message)
-    {
-        super(message);
-    }
     public static boolean isalphanumeric(String input) {
         if(input.length()==1){
             return false;
@@ -409,4 +394,20 @@ class FileCreationException extends Exception
     public static boolean isalfasayı(String input){
         return input.matches("[a-zA-Z0-9]+");
     }
+}
+class InvalidFileNameException extends Exception
+{
+    public InvalidFileNameException(String message)
+    {
+        super(message);
+    }
+}
+
+class FileCreationException extends Exception
+{
+    public FileCreationException(String message)
+    {
+        super(message);
+    }
+    
 }
