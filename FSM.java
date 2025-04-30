@@ -38,10 +38,10 @@ public class Main
     static String[]rakamlardızı=rakamlar.split("");
     static String alfanumaerik=buyukharfler+rakamlar;
     static String[] alfanumerikdizi=alfanumaerik.split("");
-    static ArrayList<String>symbolslist=new ArrayList<>();
+    static ArrayList<String> symbolslist = new ArrayList<>();
 
     //FR6 için ek kısımlar
-    static ArrayList<String>stateslist=new ArrayList<>();
+    static ArrayList<String> stateslist = new ArrayList<>();
 
     // fsm için gerekli ek değişkenler(fr7 için)
     static String initialState = "";
@@ -110,7 +110,7 @@ public class Main
             else if (commandArray[0].equals("PRINT") && commandArray.length==2){
                 PRINT();
             }
-            else if(commandArray[0].equals("COMPILE")&& commandArray.length==2)
+            else if(commandArray[0].equalsIgnoreCase("COMPILE") && commandArray.length==2)
             {
                 COMPILE(commandArray[1]);
             }
@@ -133,6 +133,17 @@ public class Main
             }
             else if (commandEntered.equals("LOG")) {
                 LOG_();
+            }
+            else if (commandEntered.equalsIgnoreCase("COMPILE"))
+            {
+                try
+                {
+                    throw new InvalidFileNameException("Compile method wants a fileName after the command");
+                }
+                catch(InvalidFileNameException e3)
+                {
+                    System.out.println(e3.getMessage());
+                }
             }
             else if (commandEntered.equals("SYMBOLS")) {
                 SYMBOLS_();
@@ -225,7 +236,7 @@ public class Main
         }
     }//fr5
     public static void SYMBOLS_(){}//fr
-    public static void STATES(){
+    public static void STATES(String[] gelendizi ){
         for (int i = 1; i < gelendizi.length; i++) {
             boolean stateilkdogrumu=false;
             boolean stateikidogrumu=false;
@@ -292,37 +303,37 @@ public class Main
         }
         initialState = state;
     }
-    
+
     //fr8
     public static void FINAL_STATES(){
-           // Girilen final stateleri commandArray[1]'den alıyor
-    String states = commandArray[1];
+        // Girilen final stateleri commandArray[1]'den alıyor
+        String states = commandArray[1];
 
-    // Virgülle ayır (örnek: Q1,Q2,Q3 gibi girilecek)
-    String[] stateArray = states.split(",");
+        // Virgülle ayır (örnek: Q1,Q2,Q3 gibi girilecek)
+        String[] stateArray = states.split(",");
 
-    for (String state : stateArray) {
-        state = state.trim(); 
+        for (String state : stateArray) {
+            state = state.trim();
 
-        if (!state.matches("[a-zA-Z0-9]+")) { // Alfanümerik kontrol
-            System.out.println("Warning: invalid final state name: " + state);
-            fr4ekleme("Warning: invalid final state name: " + state);
-            continue;
-        }
+            if (!state.matches("[a-zA-Z0-9]+")) { // Alfanümerik kontrol
+                System.out.println("Warning: invalid final state name: " + state);
+                fr4ekleme("Warning: invalid final state name: " + state);
+                continue;
+            }
 
-        if (!statesList.contains(state)) { 
-            statesList.add(state);
-            System.out.println("Warning: final state not declared previously, added to states list: " + state);
-            fr4ekleme("Warning: final state not declared previously, added to states list: " + state);
-        }
+            if (!statesList.contains(state)) {
+                statesList.add(state);
+                System.out.println("Warning: final state not declared previously, added to states list: " + state);
+                fr4ekleme("Warning: final state not declared previously, added to states list: " + state);
+            }
 
-        if (!finalStates.contains(state)) { 
-            finalStates.add(state);
+            if (!finalStates.contains(state)) {
+                finalStates.add(state);
+            }
         }
     }
-    }
-    
-   
+
+
     public static void TRANSITIONS(){}//fr9
     public static void PRINT()//fr10
     {
@@ -337,12 +348,24 @@ public class Main
         FSMDatas data = new FSMDatas(initialState,statesList,symbolsList,finalStates,transitionsList);
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName)))
         {
+            if (fileName == null || fileName.trim().isEmpty()) {
+                throw new InvalidFileNameException("File name cannot be null or empty.");
+            }
             out.writeObject(data);
             System.out.println("Datas are serialized and to " + fileName + " written.");
         }
-        catch (IOException e)
+        catch (FileNotFoundException e1)
         {
-            e.printStackTrace();
+            System.out.println("OS cannot work on this type of fileName");
+        }
+
+        catch (InvalidFileNameException e2)
+        {
+            System.out.println(e2.getMessage());
+        }
+        catch (IOException e3)
+        {
+            e3.printStackTrace();
         }
     }
     public static void CLEAR(){}//fr12
@@ -356,7 +379,7 @@ public class Main
             symbolsList = data.symbolsList;
             finalStates = data.finalStates;
             transitionsList = data.transitionsList;
-            System.out.println("Datas are to " + fileName + " written");
+            System.out.println("Datas from " + fileName + "  are read");
         }
         catch (ClassNotFoundException | IOException e)
         {
@@ -370,5 +393,20 @@ public class Main
         if(kayıt){
             FR4list.add(a);
         }
+    }
+}
+class InvalidFileNameException extends Exception
+{
+    public InvalidFileNameException(String message)
+    {
+        super(message);
+    }
+}
+
+class FileCreationException extends Exception
+{
+    public FileCreationException(String message)
+    {
+        super(message);
     }
 }
