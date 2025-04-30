@@ -412,4 +412,19 @@ class FileCreationException extends Exception
     {
         super(message);
     }
+    public static boolean isalphanumeric(String input) {
+        if(input.length()==1){
+            return false;
+        }
+        if(input.matches("[a-zA-Z]+")){
+            return false;
+        }
+        if(input.matches("[0-9]+")){
+            return false;
+        }
+        return input.matches("[a-zA-Z0-9]+");
+    }
+    public static boolean isalfasayı(String input){
+        return input.matches("[a-zA-Z0-9]+");
+    }
 }
