@@ -376,6 +376,9 @@ public class Main
         return input.matches("[a-zA-Z0-9]+");
     }
     public static boolean isalfasayı(String input){
+        if(input.length()>1){
+            return false;
+        }
         return input.matches("[a-zA-Z0-9]+");
     }
 }
