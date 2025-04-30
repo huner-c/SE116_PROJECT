@@ -90,7 +90,7 @@ public class Main
                 LOG();
             }
             else if (commandArray[0].equals("SYMBOLS")) {
-                SYMBOLS();
+                SYMBOLS(commandArray);
             }
             else if (commandArray[0].equals("STATES")){
                 STATES(commandArray);
@@ -197,47 +197,29 @@ public class Main
             }
         }
     }//fr4
-    public static void SYMBOLS(){
-        for (int i = 1; i < commandArray.length; i++) {
-            boolean alfanumerikmi = false;
-            boolean zatenvarmı = false;
-            System.out.println("araştırılan : " + commandArray[i].toUpperCase());
-            for (String aa : alfanumerikdizi) {//alfanmerik mi diye baktık
-                if (aa.equals(commandArray[i].toUpperCase())) {
-                    alfanumerikmi = true;
-                    break;
-                }
-            }
-            if (alfanumerikmi) {
-                if (symbolsList.isEmpty()) {
-                    symbolsList.add(commandArray[i].toUpperCase());
-                    System.out.println("eklendi: " + commandArray[i].toUpperCase());
-                } else {
-                    for (String aa : symbolsList) {
-                        if (aa.equals(commandArray[i].toUpperCase())) {
-                            System.out.println("daha önceden eklenmiş : " + commandArray[i].toUpperCase());
-                            fr4ekleme("daha önceden eklenmiş : " + commandArray[i].toUpperCase());
-                            zatenvarmı = true;
-                            break;
-                        }
-                    }
-                    if (!zatenvarmı) {
-                        symbolsList.add(commandArray[i].toUpperCase());
-                        System.out.println("eklendi : " + commandArray[i].toUpperCase());
+    public static void SYMBOLS(String[] incomingArray){
+       for(int i=1;i<incomingArray.length;i++){
+            String data=incomingArray[i].toUpperCase();
+            if(isalfasayı(data)){
+                boolean varmıydı=false;
+                for(String aa:symbolsList){
+                    if(aa.equals(data)){
+                        varmıydı=true;
+                        break;
                     }
                 }
-            } else {
-                System.out.println("alfanumerik değil : " + commandArray[i].toUpperCase());
-                fr4ekleme("alfanumerik değil : " + commandArray[i].toUpperCase());
+                if(varmıydı){
+                    System.out.println(data+" zaten vardı");
+                }else{
+                    symbolsList.add(data);
+                    System.out.println(data+" eklendi");
+                }
+            }else{
+                System.out.println(data+" alfasayı değil");
             }
+
+
         }
-    }//fr5
-    public static void SYMBOLS_(){
-        System.out.println("******* SYMBOLS LİST *******");
-        for(String aa:symbolsList){
-            System.out.println(aa);
-        }
-        System.out.println("******* SYMBOLS LİST *******");
     }//fr
     public static void STATES(String[] gelendizi ){
         for (int i = 1; i < gelendizi.length; i++) {
