@@ -221,6 +221,13 @@ public class Main
 
         }
     }//fr
+    public static void SYMBOLS_(){
+        System.out.println("******* SYMBOLS LİST *******");
+        for(String aa:symbolsList){
+            System.out.println(aa);
+        }
+        System.out.println("******* SYMBOLS LİST *******");
+    }
     public static void STATES(String[] gelendizi ){
         for (int i = 1; i < gelendizi.length; i++) {
             boolean stateilkdogrumu=false;
