@@ -39,7 +39,7 @@ public class Main
     static String alfanumaerik=buyukharfler+rakamlar;
     static String[] alfanumerikdizi=alfanumaerik.split("");
 
-    
+
     // fsm için gerekli ek değişkenler(fr7 için)
     static String initialState = "";
     static ArrayList<String> statesList = new ArrayList<>();
@@ -107,10 +107,19 @@ public class Main
             else if (commandArray[0].equals("PRINT") && commandArray.length==2){
                 PRINT();
             }
+
             else if(commandArray[0].equalsIgnoreCase("COMPILE") && commandArray.length==2)
             {
-                COMPILE(commandArray[1]);
+                try
+                {
+                    COMPILE(commandArray[1]);
+                }
+                catch (FileCreationException | InvalidFileNameException e5)
+                {
+                    System.out.println(e5.getMessage());
+                }
             }
+
             else if(commandArray[0].equals("LOAD")&& commandArray.length==2){
                 LOAD(commandArray[1]);
             }
@@ -198,7 +207,7 @@ public class Main
         }
     }//fr4
     public static void SYMBOLS(String[] incomingArray){
-       for(int i=1;i<incomingArray.length;i++){
+        for(int i=1;i<incomingArray.length;i++){
             String data=incomingArray[i].toUpperCase();
             if(isalfasayı(data)){
                 boolean varmıydı=false;
@@ -229,7 +238,7 @@ public class Main
         System.out.println("******* SYMBOLS LİST *******");
     }
     public static void STATES(String[] incomingArray ){
-       for(int i=1;i< incomingArray.length;i++){
+        for(int i=1;i< incomingArray.length;i++){
             if(isalphanumeric(incomingArray[i].toUpperCase())){
                 if(statesList.isEmpty()){
                     statesList.add(incomingArray[i].toUpperCase());
@@ -271,9 +280,7 @@ public class Main
             fr4ekleme("Warning: state has not been declared yet, added to list");
         }
         initialState = state;
-    }
-
-    //fr8
+    }//fr8
     public static void FINAL_STATES(){
         // Girilen final stateleri commandArray[1]'den alıyor
         String states = commandArray[1];
@@ -301,8 +308,6 @@ public class Main
             }
         }
     }
-
-
     public static void TRANSITIONS(){}//fr9
     public static void PRINT()//fr10
     {
@@ -312,31 +317,39 @@ public class Main
         System.out.println("FINAL STATES: " + finalStates);
         System.out.println("TRANSITIONS: " + transitionsList);
     }
+
+
+
     public static void COMPILE(String fileName)//fr11
     {
+        if (fileName == null || fileName.trim().isEmpty())
+        {
+            throw new InvalidFileNameException("File name cannot be null or empty.");
+        }
+        if (fileName.matches(".*[<>:\"/\\|?*].*") || fileName.contains("\0"))
+        {
+            throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
+        }
+
         FSMDatas data = new FSMDatas(initialState,statesList,symbolsList,finalStates,transitionsList);
+
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName)))
         {
-            if (fileName == null || fileName.trim().isEmpty()) {
-                throw new InvalidFileNameException("File name cannot be null or empty.");
-            }
             out.writeObject(data);
             System.out.println("Datas are serialized and to " + fileName + " written.");
         }
         catch (FileNotFoundException e1)
         {
-            System.out.println("OS cannot work on this type of fileName");
+            throw new FileCreationException("Cannot create or access the file: " + fileName + ". Reason: " + e1.getMessage());
         }
-
-        catch (InvalidFileNameException e2)
+        catch (IOException e)
         {
-            System.out.println(e2.getMessage());
-        }
-        catch (IOException e3)
-        {
-            e3.printStackTrace();
+            throw new FileCreationException("Error while writing to the file: " + fileName + ". Reason: " + e.getMessage());
         }
     }
+
+
+
     public static void CLEAR(){}//fr12
     public static void LOAD(String fileName)//fr13
     {
@@ -382,7 +395,10 @@ public class Main
         return input.matches("[a-zA-Z0-9]+");
     }
 }
-class InvalidFileNameException extends Exception
+
+
+
+class InvalidFileNameException extends RuntimeException
 {
     public InvalidFileNameException(String message)
     {
@@ -390,11 +406,11 @@ class InvalidFileNameException extends Exception
     }
 }
 
-class FileCreationException extends Exception
+class FileCreationException extends RuntimeException
 {
     public FileCreationException(String message)
     {
         super(message);
     }
-    
+
 }
