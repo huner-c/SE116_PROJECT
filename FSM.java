@@ -52,8 +52,64 @@ public class Main
 
     public static void main(String[] args)
     {
-        codeExoskeleton();
+        if (args.length > 0)
+        {
+            processCommandsFromFile(args[0]);
+        } 
+        else
+        {
+            codeExoskeleton();
+        }
     }
+    public static void processCommandsFromFile(String fileName) {
+        try {
+            if (fileName == null || fileName.trim().isEmpty())
+            {
+                throw new InvalidFileNameException("File name cannot be null or empty.");
+            }
+            if (fileName.matches(".*[<>:\"/\\|?*].*") || fileName.contains("\0"))
+            {
+                throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
+            }
+            try (BufferedReader reader = new BufferedReader(new FileReader(fileName)))
+            {
+                String line;
+                while ((line = reader.readLine()) != null)
+                {
+                    if (line.trim().isEmpty())
+                    {
+                        continue;
+                    }
+                    if (line.contains(";"))
+                    {
+                        commandEntered = line.replaceAll("\n", " ").split(";", 2)[0].trim();
+                        commandArray = commandEntered.split(" ");
+                        hub();
+                    }
+                    else
+                    {
+                        System.out.println("Invalid command format (missing semicolon): " + line);
+                        fr4ekleme("Invalid command format (missing semicolon): " + line);
+                    }
+                }
+            }
+            catch (FileNotFoundException e)
+            {
+                throw new FileAccessException("Cannot access the file: " + fileName + ". File not found.");
+            }
+            catch (IOException e)
+            {
+                throw new FileAccessException("Error while reading the file: " + fileName + ". Reason: " + e.getMessage());
+            }
+        }
+        catch (InvalidFileNameException | FileAccessException e)
+        {
+            System.out.println(e.getMessage());
+            fr4ekleme(e.getMessage());
+        }
+    }
+
+
     public static void codeExoskeleton()
     {
         Scanner sc = new Scanner(System.in);
@@ -130,7 +186,9 @@ public class Main
                 System.out.println("invalid comment");
                 fr4ekleme("invalid comment");
             }
-        }else{
+        }
+        else
+        {
             if (commandEntered.equals("")) {
                 VERSION_CONTROL();
             }
@@ -154,7 +212,7 @@ public class Main
             else if (commandEntered.equals("SYMBOLS")) {
                 SYMBOLS_();
             }
-            else if (commandEntered.equals("STATES")) {
+            else if (commandEntered.equals("STATES")) { // bunun o ana kadarki state leri yazdirmasi lazim
                 STATES_();
             }
             else if (commandEntered.equals("CLEAR")) {
@@ -405,12 +463,17 @@ class InvalidFileNameException extends RuntimeException
         super(message);
     }
 }
-
 class FileCreationException extends RuntimeException
 {
     public FileCreationException(String message)
     {
         super(message);
     }
-
+}
+class FileAccessException extends Exception
+{
+    public FileAccessException(String message)
+    {
+        super(message);
+    }
 }
