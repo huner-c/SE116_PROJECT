@@ -212,9 +212,7 @@ public class Main
             else if (commandEntered.equals("SYMBOLS")) {
                 SYMBOLS_();
             }
-            else if (commandEntered.equals("STATES")) { // bunun o ana kadarki state leri yazdirmasi lazim
-                STATES_();
-            }
+           
             else if (commandEntered.equals("CLEAR")) {
                 CLEAR();
             }
@@ -250,7 +248,7 @@ public class Main
             for (String aa:FR4list){
                 f_fr4.format("%s \n", aa);
             }
-            System.out.println("yazıldı");
+            
         } catch (Exception e) {
             System.out.println("LOGGING was not enabled");
             System.out.println("file cannot be created, written, etc");
@@ -276,24 +274,26 @@ public class Main
                     }
                 }
                 if(varmıydı){
-                    System.out.println(data+" zaten vardı");
+                    System.out.println(data+" already exists");
+                    fr4ekleme(data+" already exists");
                 }else{
                     symbolsList.add(data);
-                    System.out.println(data+" eklendi");
                 }
             }else{
-                System.out.println(data+" alfasayı değil");
+                System.out.println(data+" is not alphanumeric");
+                fr4ekleme(data +" is not alphanumeric");
             }
 
 
         }
     }//fr
     public static void SYMBOLS_(){
-        System.out.println("******* SYMBOLS LİST *******");
+        System.out.print("SYMBOLS: ");
         for(String aa:symbolsList){
-            System.out.println(aa);
+            System.out.print(aa+" ");
         }
-        System.out.println("******* SYMBOLS LİST *******");
+        System.out.println();
+        
     }
     public static void STATES(String[] incomingArray ){
         for(int i=1;i< incomingArray.length;i++){
@@ -302,7 +302,8 @@ public class Main
                     statesList.add(incomingArray[i].toUpperCase());
                     System.out.println(incomingArray[i]+" eklendi");
                     initialState=incomingArray[i].toUpperCase();
-                    System.out.println(incomingArray[i].toUpperCase()+" ınıtıal state olarak ayarlandı ");
+                    System.out.println(incomingArray[i].toUpperCase()+" set es initial state ");
+                    fr4ekleme(incomingArray[i].toUpperCase()+" set es initial state ");
                     continue;
                 }
                 boolean varmıydı=false;
@@ -313,17 +314,19 @@ public class Main
                     }
                 }
                 if(varmıydı){
-                    System.out.println(incomingArray[i].toUpperCase()+" zaten var");
+                    System.out.println(incomingArray[i].toUpperCase()+" already exists");
+                    fr4ekleme(incomingArray[i].toUpperCase()+" already exists");
                     continue;
                 }
                 statesList.add(incomingArray[i].toUpperCase());
-                System.out.println(incomingArray[i]+" eklendi");
+            
             }else{
-                System.out.println(incomingArray[i]+" alfanumerik değil");
+                System.out.println(incomingArray[i]+" is not alphanumeric");
+                fr4ekleme(incomingArray[i]+" is not alphanumeric");
             }
         }
     }//fr6
-    public static void STATES_(){}//fr6
+    
     public static void INITIAL_STATE(){
         String state = commandArray[1];
 
