@@ -460,7 +460,16 @@ public class Main
 
 
 
-    public static void CLEAR(){}//fr12
+    public static void CLEAR(){
+        initialState = "";
+        statesList.clear();
+        symbolsList.clear();
+        finalStates.clear();
+        transitionsList.clear();
+
+        System.out.println("All FSM data cleared.");
+        fr4ekleme("All FSM data cleared.");
+    }//fr12
     public static void LOAD(String fileName)//fr13
     {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName)))
