@@ -472,9 +472,12 @@ public class Main
             finalStates = data.finalStates;
             transitionsList = data.transitionsList;
             System.out.println("Datas from " + fileName + "  are read");
+            fr4ekleme("Datas from " + fileName + " are read");
         }
         catch (ClassNotFoundException | IOException e)
         {
+            System.out.println("Error while loading data: " + e.getMessage());
+            fr4ekleme("Error while loading data: " + e.getMessage());
             e.printStackTrace();
         }
     }
