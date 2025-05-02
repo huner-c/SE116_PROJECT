@@ -369,7 +369,56 @@ public class Main
             }
         }
     }
-    public static void TRANSITIONS(){}//fr9
+    public static void TRANSITIONS(){
+        String input = commandArray[1];
+
+        if (!input.contains("-") || !input.contains(">")) {
+            System.out.println("Invalid transition format. Use: FROM-SYMBOL>TO");
+            fr4ekleme("Invalid transition format. Use: FROM-SYMBOL>TO");
+            return;
+        }
+
+        String[] parts = input.split("[-|>]");
+        if (parts.length != 3) {
+            System.out.println("Transition must be in the format FROM-SYMBOL>TO");
+            fr4ekleme("Transition must be in the format FROM-SYMBOL>TO");
+            return;
+        }
+
+        String fromState = parts[0].toUpperCase();
+        String symbol = parts[1].toUpperCase();
+        String toState = parts[2].toUpperCase();
+
+        if (!statesList.contains(fromState)) {
+            System.out.println("FROM state not defined: " + fromState);
+            fr4ekleme("FROM state not defined: " + fromState);
+            return;
+        }
+
+        if (!statesList.contains(toState)) {
+            System.out.println("TO state not defined: " + toState);
+            fr4ekleme("TO state not defined: " + toState);
+            return;
+        }
+
+        if (!symbolsList.contains(symbol)) {
+            System.out.println("SYMBOL not defined: " + symbol);
+            fr4ekleme("SYMBOL not defined: " + symbol);
+            return;
+        }
+
+        String transition = fromState + "-" + symbol + ">" + toState;
+
+        if (transitionsList.contains(transition)) {
+            System.out.println("Transition already exists: " + transition);
+            fr4ekleme("Transition already exists: " + transition);
+            return;
+        }
+
+        transitionsList.add(transition);
+        System.out.println("Transition added: " + transition);
+        fr4ekleme("Transition added: " + transition);
+    }//fr9
     public static void PRINT()//fr10
     {
         System.out.println("SYMBOLS: " + symbolsList);
