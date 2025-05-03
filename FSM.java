@@ -55,20 +55,23 @@ public class Main
         if (args.length > 0)
         {
             processCommandsFromFile(args[0]);
-        } 
+        }
         else
         {
             codeExoskeleton();
         }
     }
-    public static void processCommandsFromFile(String fileName) {
+    public static void processCommandsFromFile(String fileName)
+    {
         try {
             if (fileName == null || fileName.trim().isEmpty())
             {
+                fr4ekleme("File name cannot be null or empty.");
                 throw new InvalidFileNameException("File name cannot be null or empty.");
             }
             if (fileName.matches(".*[<>:\"/\\|?*].*") || fileName.contains("\0"))
             {
+                fr4ekleme("File name contains invalid characters: " + fileName);
                 throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
             }
             try (BufferedReader reader = new BufferedReader(new FileReader(fileName)))
@@ -212,7 +215,7 @@ public class Main
             else if (commandEntered.equals("SYMBOLS")) {
                 SYMBOLS_();
             }
-           
+
             else if (commandEntered.equals("CLEAR")) {
                 CLEAR();
             }
@@ -248,7 +251,7 @@ public class Main
             for (String aa:FR4list){
                 f_fr4.format("%s \n", aa);
             }
-            
+
         } catch (Exception e) {
             System.out.println("LOGGING was not enabled");
             System.out.println("file cannot be created, written, etc");
@@ -293,7 +296,7 @@ public class Main
             System.out.print(aa+" ");
         }
         System.out.println();
-        
+
     }
     public static void STATES(String[] incomingArray ){
         for(int i=1;i< incomingArray.length;i++){
@@ -319,14 +322,14 @@ public class Main
                     continue;
                 }
                 statesList.add(incomingArray[i].toUpperCase());
-            
+
             }else{
                 System.out.println(incomingArray[i]+" is not alphanumeric");
                 fr4ekleme(incomingArray[i]+" is not alphanumeric");
             }
         }
     }//fr6
-    
+
     public static void INITIAL_STATE(){
         String state = commandArray[1];
 
@@ -434,10 +437,12 @@ public class Main
     {
         if (fileName == null || fileName.trim().isEmpty())
         {
+            fr4ekleme("File name cannot be null or empty.");
             throw new InvalidFileNameException("File name cannot be null or empty.");
         }
         if (fileName.matches(".*[<>:\"/\\|?*].*") || fileName.contains("\0"))
         {
+            fr4ekleme("File name contains invalid characters: ");
             throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
         }
 
@@ -446,19 +451,20 @@ public class Main
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName)))
         {
             out.writeObject(data);
+            fr4ekleme("Datas are serialized and to " + fileName + " written.");
             System.out.println("Datas are serialized and to " + fileName + " written.");
         }
         catch (FileNotFoundException e1)
         {
+            fr4ekleme("Cannot create or access the file: " + fileName + ". Reason: " + e1.getMessage());
             throw new FileCreationException("Cannot create or access the file: " + fileName + ". Reason: " + e1.getMessage());
         }
         catch (IOException e)
         {
+            fr4ekleme("Error while writing to the file: " + fileName + ". Reason: " + e.getMessage());
             throw new FileCreationException("Error while writing to the file: " + fileName + ". Reason: " + e.getMessage());
         }
     }
-
-
 
     public static void CLEAR(){
         initialState = "";
