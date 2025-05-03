@@ -52,6 +52,7 @@ public class Main
 
     public static void main(String[] args)
     {
+        VERSION_CONTROL();
         if (args.length > 0)
         {
             processCommandsFromFile(args[0]);
@@ -60,6 +61,7 @@ public class Main
         {
             codeExoskeleton();
         }
+
     }
     public static void processCommandsFromFile(String fileName)
     {
@@ -133,9 +135,7 @@ public class Main
                 builder.setLength(0);
             }
         }
-
     }
-
     public static void hub()
     {
         System.out.println(Arrays.toString(commandArray));
@@ -193,7 +193,7 @@ public class Main
         else
         {
             if (commandEntered.equals("")) {
-                VERSION_CONTROL();
+
             }
             else if (commandEntered.equals("EXIT")) {
                 EXIT();
@@ -234,10 +234,12 @@ public class Main
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDateTime = now.format(formatter);
-        System.out.println("FSM DESIGNER <3.0beta A>  "+formattedDateTime);
+        fr4ekleme("FSM DESIGNER <Update 03.05 10.52>  "+formattedDateTime);
+        System.out.println("FSM DESIGNER <Update 03.05 10.52>  "+formattedDateTime);
     }
     public static void EXIT() //EXIT A     //fr3
     {
+        fr4ekleme("TERMINATED BY USER");
         System.out.println("TERMINATED BY USER");
         System.exit(0);
     }
