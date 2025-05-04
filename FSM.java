@@ -32,12 +32,7 @@ public class Main
     static String dosyaAdı="";
 
     //fr5 için ek kısımlar
-    static String buyukharfler="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    static String rakamlar="0123456789";
-    static String[] harflerdızı=buyukharfler.split("");
-    static String[]rakamlardızı=rakamlar.split("");
-    static String alfanumaerik=buyukharfler+rakamlar;
-    static String[] alfanumerikdizi=alfanumaerik.split("");
+    
 
 
     // fsm için gerekli ek değişkenler(fr7 için)
@@ -305,7 +300,6 @@ public class Main
             if(isalphanumeric(incomingArray[i].toUpperCase())){
                 if(statesList.isEmpty()){
                     statesList.add(incomingArray[i].toUpperCase());
-                    System.out.println(incomingArray[i]+" eklendi");
                     initialState=incomingArray[i].toUpperCase();
                     System.out.println(incomingArray[i].toUpperCase()+" set es initial state ");
                     fr4ekleme(incomingArray[i].toUpperCase()+" set es initial state ");
