@@ -420,11 +420,30 @@ public class Main
     }//fr9
     public static void PRINT()//fr10
     {
-        System.out.println("SYMBOLS: " + symbolsList);
-        System.out.println("STATES: " + statesList);
-        System.out.println("INITIAL STATE: " + initialState);
-        System.out.println("FINAL STATES: " + finalStates);
-        System.out.println("TRANSITIONS: " + transitionsList);
+        StringBuilder output = new StringBuilder();
+        output.append("SYMBOLS: ").append(symbolsList).append("\n");
+        output.append("STATES: ").append(statesList).append("\n");
+        output.append("INITIAL STATE: ").append(initialState).append("\n");
+        output.append("FINAL STATES: ").append(finalStates).append("\n");
+        output.append("TRANSITIONS: ").append(transitionsList).append("\n");
+
+        String result = output.toString();
+
+        System.out.print(result);
+        fr4ekleme(result);
+
+        //dosya ismi verilmisse yazdirir
+        if (commandArray.length == 2) {
+            String filename = commandArray[1];
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+                writer.write(result);
+                System.out.println("FSM data written to file: " + filename);
+                fr4ekleme("FSM data written to file: " + filename);
+            } catch (IOException e) {
+                System.out.println("Error writing to file: " + e.getMessage());
+                fr4ekleme("Error writing to file: " + e.getMessage());
+            }
+        }
     }
 
 
