@@ -374,7 +374,7 @@ public class Main
             return;
         }
 
-        String[] parts = input.split("[-|>]");
+        String[] parts = input.split("[-]>");
         if (parts.length != 3) {
             System.out.println("Transition must be in the format FROM-SYMBOL>TO");
             fr4ekleme("Transition must be in the format FROM-SYMBOL>TO");
