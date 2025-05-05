@@ -342,31 +342,28 @@ public class Main
         initialState = state;
     }//fr8
     public static void FINAL_STATES(){
-        // Girilen final stateleri commandArray[1]'den alıyor
-        String states = commandArray[1];
+        String states = commandEntered.substring(commandEntered.indexOf(" ") + 1).trim(); 
+    String[] stateArray = states.split("[,\\s]+"); // hem boşluk hem virgül ile ayırıyor artık
 
-        // Virgülle ayır (örnek: Q1,Q2,Q3 gibi girilecek)
-        String[] stateArray = states.split(",");
+    for (String state : stateArray) {
+        state = state.trim();
 
-        for (String state : stateArray) {
-            state = state.trim();
-
-            if (!state.matches("[a-zA-Z0-9]+")) { // Alfanümerik kontrol
-                System.out.println("Warning: invalid final state name: " + state);
-                fr4ekleme("Warning: invalid final state name: " + state);
-                continue;
-            }
-
-            if (!statesList.contains(state)) {
-                statesList.add(state);
-                System.out.println("Warning: final state not declared previously, added to states list: " + state);
-                fr4ekleme("Warning: final state not declared previously, added to states list: " + state);
-            }
-
-            if (!finalStates.contains(state)) {
-                finalStates.add(state);
-            }
+        if (!state.matches("[a-zA-Z0-9]+")) {
+            System.out.println("Warning: invalid final state name: " + state);
+            fr4ekleme("Warning: invalid final state name: " + state);
+            continue;
         }
+
+        if (!statesList.contains(state)) {
+            statesList.add(state);
+            System.out.println("Warning: final state not declared previously, added to states list: " + state);
+            fr4ekleme("Warning: final state not declared previously, added to states list: " + state);
+        }
+
+        if (!finalStates.contains(state)) {
+            finalStates.add(state);
+        }
+    }
     }
     public static void TRANSITIONS(){
         String input = commandArray[1];
