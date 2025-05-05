@@ -418,29 +418,84 @@ public class Main
     public static void PRINT()//fr10
     {
         StringBuilder output = new StringBuilder();
-        output.append("SYMBOLS: ").append(symbolsList).append("\n");
-        output.append("STATES: ").append(statesList).append("\n");
-        output.append("INITIAL STATE: ").append(initialState).append("\n");
-        output.append("FINAL STATES: ").append(finalStates).append("\n");
-        output.append("TRANSITIONS: ").append(transitionsList).append("\n");
 
-        String result = output.toString();
+    
+    output.append("SYMBOLS {");
+    for (int i = 0; i < symbolsList.size(); i++) {
+        output.append(symbolsList.get(i));
+        if (i < symbolsList.size() - 1) output.append(",");
+    }
+    output.append("}\n");
 
-        System.out.print(result);
-        fr4ekleme(result);
+    
+    output.append("STATES {");
+    for (int i = 0; i < statesList.size(); i++) {
+        output.append(statesList.get(i));
+        if (i < statesList.size() - 1) output.append(",");
+    }
+    output.append("}\n");
 
-        //dosya ismi verilmisse yazdirir
-        if (commandArray.length == 2) {
-            String filename = commandArray[1];
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-                writer.write(result);
-                System.out.println("FSM data written to file: " + filename);
-                fr4ekleme("FSM data written to file: " + filename);
-            } catch (IOException e) {
-                System.out.println("Error writing to file: " + e.getMessage());
-                fr4ekleme("Error writing to file: " + e.getMessage());
-            }
+   
+    output.append("INITIAL STATE ").append(initialState).append("\n");
+
+   
+    output.append("FINAL STATES {");
+    for (int i = 0; i < finalStates.size(); i++) {
+        output.append(finalStates.get(i));
+        if (i < finalStates.size() - 1) output.append(",");
+    }
+    output.append("}\n");
+
+    
+    output.append("TRANSITIONS ");
+    for (int i = 0; i < transitionsList.size(); i++) {
+        
+        String[] parts = transitionsList.get(i).split("[-|>]");
+        if (parts.length == 3) {
+            output.append(parts[1]).append(" ").append(parts[0]).append(" ").append(parts[2]);
+            if (i < transitionsList.size() - 1) output.append(", ");
         }
+    }
+    output.append("\n");
+
+    String result = output.toString();
+    System.out.print(result);
+    fr4ekleme(result);
+
+    if (commandArray.length == 2) {
+        String filename = commandArray[1];
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            writer.write("SYMBOLS ");
+            for (String symbol : symbolsList) writer.write(symbol + " ");
+            writer.write(";\n");
+
+            writer.write("STATES ");
+            for (String state : statesList) writer.write(state + " ");
+            writer.write(";\n");
+
+            writer.write("INITIAL-STATE " + initialState + ";\n");
+
+            writer.write("FINAL-STATES ");
+            for (String state : finalStates) writer.write(state + " ");
+            writer.write(";\n");
+
+            writer.write("TRANSITIONS ");
+            for (int i = 0; i < transitionsList.size(); i++) {
+                String[] parts = transitionsList.get(i).split("[-|>]");
+                if (parts.length == 3) {
+                    writer.write(parts[1] + " " + parts[0] + " " + parts[2]);
+                    if (i < transitionsList.size() - 1) writer.write(", ");
+                }
+            }
+            writer.write(";\n");
+
+            System.out.println("FSM data written to file: " + filename);
+            fr4ekleme("FSM data written to file: " + filename);
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+            fr4ekleme("Error writing to file: " + e.getMessage());
+        }
+    }
     }
 
 
