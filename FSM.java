@@ -358,7 +358,7 @@ public class Main
             
             System.out.println("Warning: final state not declared previously, added to states list: " + state);
             fr4ekleme("Warning: final state not declared previously, added to states list: " + state);
-            continue;
+            statesList.add(state);
         }
 
         if (!finalStates.contains(state)) {
