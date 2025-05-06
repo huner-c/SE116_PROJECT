@@ -567,7 +567,10 @@ public class FSM implements Serializable
                 System.out.println("Warning: Something went wrong!");
             }
 
-            if (readFSM == null);
+            if (readFSM == null) {
+    System.out.println("Error: Failed to load FSM from file.");
+    return;
+}
             this.setSymbolsList(readFSM.getSymbolsList());
             this.setStatesList(readFSM.getStatesList());
             this.setInitialState(readFSM.getInitialState());
