@@ -1,116 +1,136 @@
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-class FSMDatas implements Serializable
+class Main
 {
-    String initialState;
-    ArrayList<String> statesList;
-    ArrayList<String> symbolsList;
-    ArrayList<String> finalStates;
-    ArrayList<String> transitionsList;
-
-    public FSMDatas(String initialState, ArrayList<String> statesList, ArrayList<String> symbolsList, ArrayList<String> finalStates, ArrayList<String> transitionsList)
-    {
-        this.initialState = initialState;
-        this.statesList = statesList;
-        this.symbolsList = symbolsList;
-        this.finalStates = finalStates;
-        this.transitionsList = transitionsList;
-    }
-}
-public class Main
-{
-    static String commandEntered="";
-    static String[] commandArray =null;
-
-    //fr4 için ek kısımlar
-    static Formatter f_fr4=null;
-    static boolean kayıt=false;
-    static ArrayList<String> FR4list=new ArrayList<>();//response eklendiği yer
-    static String dosyaAdı="";
-
-    //fr5 için ek kısımlar
-    
-
-
-    // fsm için gerekli ek değişkenler(fr7 için)
-    static String initialState = "";
-    static ArrayList<String> statesList = new ArrayList<>();
-
-    //fr10 için ek değişkenler
-    static ArrayList<String> symbolsList = new ArrayList<>();
-    static ArrayList<String> finalStates = new ArrayList<>();
-    static ArrayList<String> transitionsList = new ArrayList<>();
-
-
     public static void main(String[] args)
     {
+        FSM fsm = new FSM();
+        fsm.START(args);
+    }
+}
+
+public class FSM implements Serializable
+{
+    public String getInitialState() {
+        return initialState;
+    }
+    public void setInitialState(String initialState) {
+        this.initialState = initialState;
+    }
+    public ArrayList<String> getTransitionsList() {
+        return transitionsList;
+    }
+    public void setTransitionsList(ArrayList<String> transitionsList) {
+        this.transitionsList = transitionsList;
+    }
+    public ArrayList<String> getFinalStates() {
+        return finalStates;
+    }
+    public void setFinalStates(ArrayList<String> finalStates) {
+        this.finalStates = finalStates;
+    }
+    public ArrayList<String> getSymbolsList() {
+        return symbolsList;
+    }
+    public void setSymbolsList(ArrayList<String> symbolsList) {
+        this.symbolsList = symbolsList;
+    }
+    public ArrayList<String> getStatesList() {
+        return statesList;
+    }
+    public void setStatesList(ArrayList<String> statesList) {
+        this.statesList = statesList;
+    }
+    public boolean getLogging() {
+        return logging;
+    }
+    public void setLogging(boolean logging) {
+        this.logging = logging;
+    }
+
+
+    private String commandEntered="";
+    private String dosyaAdı="";
+    private String initialState = "";//////////////////////////////////////////
+    private ArrayList<String> FR4list=new ArrayList<>();
+    private ArrayList<String> statesList = new ArrayList<>();//////////////////
+    private ArrayList<String> symbolsList = new ArrayList<>();/////////////////
+    private ArrayList<String> finalStates = new ArrayList<>();/////////////////
+    private ArrayList<String> transitionsList = new ArrayList<>();/////////////
+    private String[] commandArray =null;
+    private Formatter f_fr4=null;
+    private boolean logging=false;
+
+    public void START(String[] args)
+    {
         VERSION_CONTROL();
-        if (args.length > 0)
+        if (args.length != 0)
         {
-            processCommandsFromFile(args[0]);
+            //processCommandsFromFile(args[0]);
         }
         else
         {
-            codeExoskeleton();
-        }
-
-    }
-    public static void processCommandsFromFile(String fileName)
-    {
-        try {
-            if (fileName == null || fileName.trim().isEmpty())
-            {
-                fr4ekleme("File name cannot be null or empty.");
-                throw new InvalidFileNameException("File name cannot be null or empty.");
-            }
-            if (fileName.matches(".*[<>:\"/\\|?*].*") || fileName.contains("\0"))
-            {
-                fr4ekleme("File name contains invalid characters: " + fileName);
-                throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
-            }
-            try (BufferedReader reader = new BufferedReader(new FileReader(fileName)))
-            {
-                String line;
-                while ((line = reader.readLine()) != null)
-                {
-                    if (line.trim().isEmpty())
-                    {
-                        continue;
-                    }
-                    if (line.contains(";"))
-                    {
-                        commandEntered = line.replaceAll("\n", " ").split(";", 2)[0].trim();
-                        commandArray = commandEntered.split(" ");
-                        hub();
-                    }
-                    else
-                    {
-                        System.out.println("Invalid command format (missing semicolon): " + line);
-                        fr4ekleme("Invalid command format (missing semicolon): " + line);
-                    }
-                }
-            }
-            catch (FileNotFoundException e)
-            {
-                throw new FileAccessException("Cannot access the file: " + fileName + ". File not found.");
-            }
-            catch (IOException e)
-            {
-                throw new FileAccessException("Error while reading the file: " + fileName + ". Reason: " + e.getMessage());
-            }
-        }
-        catch (InvalidFileNameException | FileAccessException e)
-        {
-            System.out.println(e.getMessage());
-            fr4ekleme(e.getMessage());
+            takeInput();
         }
     }
 
+//    public static void processCommandsFromFile(String fileName)
+//    {
+//        try {
+//            if (fileName == null || fileName.trim().isEmpty())
+//            {
+//                fr4ekleme("File name cannot be null or empty.");
+//                throw new InvalidFileNameException("File name cannot be null or empty.");
+//            }
+//            if (fileName.matches(".*[<>:\"/\\|?*].*") || fileName.contains("\0"))
+//            {
+//                fr4ekleme("File name contains invalid characters: " + fileName);
+//                throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
+//            }
+//            try (BufferedReader reader = new BufferedReader(new FileReader(fileName)))
+//            {
+//                String line;
+//                while ((line = reader.readLine()) != null)
+//                {
+//                    if (line.trim().isEmpty())
+//                    {
+//                        continue;
+//                    }
+//                    if (line.contains(";"))
+//                    {
+//                        commandEntered = line.replaceAll("\n", " ").split(";", 2)[0].trim();
+//                        commandArray = commandEntered.split(" ");
+//                        hub();
+//                    }
+//                    else
+//                    {
+//                        System.out.println("Invalid command format (missing semicolon): " + line);
+//                        fr4ekleme("Invalid command format (missing semicolon): " + line);
+//                    }
+//                }
+//            }
+//            catch (FileNotFoundException e)
+//            {
+//                throw new FileAccessException("Cannot access the file: " + fileName + ". File not found.");
+//            }
+//            catch (IOException e)
+//            {
+//                throw new FileAccessException("Error while reading the file: " + fileName + ". Reason: " + e.getMessage());
+//            }
+//        }
+//        catch (InvalidFileNameException | FileAccessException e)
+//        {
+//            System.out.println(e.getMessage());
+//            fr4ekleme(e.getMessage());
+//        }
+//    }
 
-    public static void codeExoskeleton()
+    private void takeInput()
     {
         Scanner sc = new Scanner(System.in);
         StringBuilder builder = new StringBuilder(); // Çok satırlı komutları birleştirmek için
@@ -126,12 +146,12 @@ public class Main
                 commandEntered = commandEntered.replaceAll("\n", " ");
                 commandEntered = commandEntered.split(";", 2)[0].trim();
                 commandArray = commandEntered.split(" ");
-                hub();
+                processCommand();
                 builder.setLength(0);
             }
         }
     }
-    public static void hub()
+    private void processCommand()
     {
         System.out.println(Arrays.toString(commandArray));
 
@@ -166,7 +186,7 @@ public class Main
             {
                 try
                 {
-                    COMPILE(commandArray[1]);
+                    compile(commandArray[1]);
                 }
                 catch (FileCreationException | InvalidFileNameException e5)
                 {
@@ -175,14 +195,14 @@ public class Main
             }
 
             else if(commandArray[0].equals("LOAD")&& commandArray.length==2){
-                LOAD(commandArray[1]);
+                load(commandArray[1]);
             }
             else if(commandArray[0].equals("EXECUTE")){
                 EXECUTE();
             }
             else {
-                System.out.println("invalid comment");
-                fr4ekleme("invalid comment");
+                System.out.println("invalid command");
+                fr4ekleme("invalid command");
             }
         }
         else
@@ -219,12 +239,12 @@ public class Main
                 PRINT();
             }
             else{
-                System.out.println("invalid comment");
-                fr4ekleme("invalid comment");
+                System.out.println("invalid command");
+                fr4ekleme("invalid command");
             }
         }
     }
-    public static void VERSION_CONTROL()//fr1
+    private void VERSION_CONTROL()
     {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -232,17 +252,17 @@ public class Main
         fr4ekleme("FSM DESIGNER <Update 03.05 10.52>  "+formattedDateTime);
         System.out.println("FSM DESIGNER <Update 03.05 10.52>  "+formattedDateTime);
     }
-    public static void EXIT() //EXIT A     //fr3
+    private void EXIT()
     {
         fr4ekleme("TERMINATED BY USER");
         System.out.println("TERMINATED BY USER");
         System.exit(0);
     }
-    public static void LOG(){
-        kayıt = true;
+    private void LOG(){
+        logging = true;
         FR4list.clear();
-    }//fr4
-    public static void LOG_(){
+    }
+    private void LOG_(){
         try {
             f_fr4 = new Formatter(dosyaAdı+".txt");
             for (String aa:FR4list){
@@ -261,8 +281,8 @@ public class Main
                 f_fr4.close();
             }
         }
-    }//fr4
-    public static void SYMBOLS(String[] incomingArray){
+    }
+    private void SYMBOLS(String[] incomingArray){
         for(int i=1;i<incomingArray.length;i++){
             String data=incomingArray[i].toUpperCase();
             if(isalfasayı(data)){
@@ -286,16 +306,15 @@ public class Main
 
 
         }
-    }//fr
-    public static void SYMBOLS_(){
+    }
+    private void SYMBOLS_(){
         System.out.print("SYMBOLS: ");
         for(String aa:symbolsList){
             System.out.print(aa+" ");
         }
         System.out.println();
-
     }
-    public static void STATES(String[] incomingArray ){
+    private void STATES(String[] incomingArray ){
         for(int i=1;i< incomingArray.length;i++){
             if(isalphanumeric(incomingArray[i].toUpperCase())){
                 if(statesList.isEmpty()){
@@ -326,7 +345,7 @@ public class Main
         }
     }//fr6
 
-    public static void INITIAL_STATE(){
+    private void INITIAL_STATE(){
         String state = commandArray[1];
 
         if (!state.matches("[a-zA-Z0-9]+")) {
@@ -341,32 +360,32 @@ public class Main
         }
         initialState = state;
     }//fr8
-    public static void FINAL_STATES(){
-        String states = commandEntered.substring(commandEntered.indexOf(" ") + 1).trim(); 
-    String[] stateArray = states.split("[,\\s]+"); // hem boşluk hem virgül ile ayırıyor artık
+    private void FINAL_STATES(){
+        String states = commandEntered.substring(commandEntered.indexOf(" ") + 1).trim();
+        String[] stateArray = states.split("[,\\s]+"); // hem boşluk hem virgül ile ayırıyor artık
 
-    for (String state : stateArray) {
-        state = state.trim();
+        for (String state : stateArray) {
+            state = state.trim();
 
-        if (!state.matches("[a-zA-Z0-9]+")) {
-            System.out.println("Warning: invalid final state name: " + state);
-            fr4ekleme("Warning: invalid final state name: " + state);
-            continue;
-        }
+            if (!state.matches("[a-zA-Z0-9]+")) {
+                System.out.println("Warning: invalid final state name: " + state);
+                fr4ekleme("Warning: invalid final state name: " + state);
+                continue;
+            }
 
-        if (!statesList.contains(state)) {
-            
-            System.out.println("Warning: final state not declared previously, added to states list: " + state);
-            fr4ekleme("Warning: final state not declared previously, added to states list: " + state);
-            statesList.add(state);
-        }
+            if (!statesList.contains(state)) {
 
-        if (!finalStates.contains(state)) {
-            finalStates.add(state);
+                System.out.println("Warning: final state not declared previously, added to states list: " + state);
+                fr4ekleme("Warning: final state not declared previously, added to states list: " + state);
+                statesList.add(state);
+            }
+
+            if (!finalStates.contains(state)) {
+                finalStates.add(state);
+            }
         }
     }
-    }
-    public static void TRANSITIONS(){
+    private void TRANSITIONS(){
         String input = commandArray[1];
 
         if (!input.contains("-") || !input.contains(">")) {
@@ -416,125 +435,186 @@ public class Main
         System.out.println("Transition added: " + transition);
         fr4ekleme("Transition added: " + transition);
     }//fr9
-    public static void PRINT()//fr10
+    private void PRINT()//fr10
     {
         StringBuilder output = new StringBuilder();
 
-    
-    output.append("SYMBOLS {");
-    for (int i = 0; i < symbolsList.size(); i++) {
-        output.append(symbolsList.get(i));
-        if (i < symbolsList.size() - 1) output.append(",");
-    }
-    output.append("}\n");
 
-    
-    output.append("STATES {");
-    for (int i = 0; i < statesList.size(); i++) {
-        output.append(statesList.get(i));
-        if (i < statesList.size() - 1) output.append(",");
-    }
-    output.append("}\n");
-
-   
-    output.append("INITIAL STATE ").append(initialState).append("\n");
-
-   
-    output.append("FINAL STATES {");
-    for (int i = 0; i < finalStates.size(); i++) {
-        output.append(finalStates.get(i));
-        if (i < finalStates.size() - 1) output.append(",");
-    }
-    output.append("}\n");
-
-    
-    output.append("TRANSITIONS ");
-    for (int i = 0; i < transitionsList.size(); i++) {
-        
-        String[] parts = transitionsList.get(i).split("[-|>]");
-        if (parts.length == 3) {
-            output.append(parts[1]).append(" ").append(parts[0]).append(" ").append(parts[2]);
-            if (i < transitionsList.size() - 1) output.append(", ");
+        output.append("SYMBOLS {");
+        for (int i = 0; i < symbolsList.size(); i++) {
+            output.append(symbolsList.get(i));
+            if (i < symbolsList.size() - 1) output.append(",");
         }
-    }
-    output.append("\n");
+        output.append("}\n");
 
-    String result = output.toString();
-    System.out.print(result);
-    fr4ekleme(result);
 
-    if (commandArray.length == 2) {
-        String filename = commandArray[1];
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            writer.write("SYMBOLS ");
-            for (String symbol : symbolsList) writer.write(symbol + " ");
-            writer.write(";\n");
+        output.append("STATES {");
+        for (int i = 0; i < statesList.size(); i++) {
+            output.append(statesList.get(i));
+            if (i < statesList.size() - 1) output.append(",");
+        }
+        output.append("}\n");
 
-            writer.write("STATES ");
-            for (String state : statesList) writer.write(state + " ");
-            writer.write(";\n");
 
-            writer.write("INITIAL-STATE " + initialState + ";\n");
+        output.append("INITIAL STATE ").append(initialState).append("\n");
 
-            writer.write("FINAL-STATES ");
-            for (String state : finalStates) writer.write(state + " ");
-            writer.write(";\n");
 
-            writer.write("TRANSITIONS ");
-            for (int i = 0; i < transitionsList.size(); i++) {
-                String[] parts = transitionsList.get(i).split("[-|>]");
-                if (parts.length == 3) {
-                    writer.write(parts[1] + " " + parts[0] + " " + parts[2]);
-                    if (i < transitionsList.size() - 1) writer.write(", ");
-                }
+        output.append("FINAL STATES {");
+        for (int i = 0; i < finalStates.size(); i++) {
+            output.append(finalStates.get(i));
+            if (i < finalStates.size() - 1) output.append(",");
+        }
+        output.append("}\n");
+
+
+        output.append("TRANSITIONS ");
+        for (int i = 0; i < transitionsList.size(); i++) {
+
+            String[] parts = transitionsList.get(i).split("[-|>]");
+            if (parts.length == 3) {
+                output.append(parts[1]).append(" ").append(parts[0]).append(" ").append(parts[2]);
+                if (i < transitionsList.size() - 1) output.append(", ");
             }
-            writer.write(";\n");
+        }
+        output.append("\n");
 
-            System.out.println("FSM data written to file: " + filename);
-            fr4ekleme("FSM data written to file: " + filename);
-        } catch (IOException e) {
-            System.out.println("Error writing to file: " + e.getMessage());
-            fr4ekleme("Error writing to file: " + e.getMessage());
+        String result = output.toString();
+        System.out.print(result);
+        fr4ekleme(result);
+
+        if (commandArray.length == 2) {
+            String filename = commandArray[1];
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+                writer.write("SYMBOLS ");
+                for (String symbol : symbolsList) writer.write(symbol + " ");
+                writer.write(";\n");
+
+                writer.write("STATES ");
+                for (String state : statesList) writer.write(state + " ");
+                writer.write(";\n");
+
+                writer.write("INITIAL-STATE " + initialState + ";\n");
+
+                writer.write("FINAL-STATES ");
+                for (String state : finalStates) writer.write(state + " ");
+                writer.write(";\n");
+
+                writer.write("TRANSITIONS ");
+                for (int i = 0; i < transitionsList.size(); i++) {
+                    String[] parts = transitionsList.get(i).split("[-|>]");
+                    if (parts.length == 3) {
+                        writer.write(parts[1] + " " + parts[0] + " " + parts[2]);
+                        if (i < transitionsList.size() - 1) writer.write(", ");
+                    }
+                }
+                writer.write(";\n");
+
+                System.out.println("FSM data written to file: " + filename);
+                fr4ekleme("FSM data written to file: " + filename);
+            } catch (IOException e) {
+                System.out.println("Error writing to file: " + e.getMessage());
+                fr4ekleme("Error writing to file: " + e.getMessage());
+            }
         }
     }
-    }
 
-
-
-    public static void COMPILE(String fileName)//fr11
+    private void compile(String fileName)
     {
-        if (fileName == null || fileName.trim().isEmpty())
-        {
-            fr4ekleme("File name cannot be null or empty.");
-            throw new InvalidFileNameException("File name cannot be null or empty.");
-        }
-        if (fileName.matches(".*[<>:\"/\\|?*].*") || fileName.contains("\0"))
-        {
-            fr4ekleme("File name contains invalid characters: ");
-            throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
-        }
-
-        FSMDatas data = new FSMDatas(initialState,statesList,symbolsList,finalStates,transitionsList);
-
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName)))
         {
-            out.writeObject(data);
-            fr4ekleme("Datas are serialized and to " + fileName + " written.");
+            if(!Files.exists(Paths.get(fileName))) Files.createFile(Paths.get(fileName));
+
+            out.writeObject(this);
+            out.flush();
             System.out.println("Datas are serialized and to " + fileName + " written.");
         }
-        catch (FileNotFoundException e1)
+        catch (InvalidClassException e)
         {
-            fr4ekleme("Cannot create or access the file: " + fileName + ". Reason: " + e1.getMessage());
-            throw new FileCreationException("Cannot create or access the file: " + fileName + ". Reason: " + e1.getMessage());
+            System.out.println("Warning: Invalid Class! " + e.getMessage());
+        }
+        catch (NotSerializableException e)
+        {
+            System.out.println("Warning: Not Serializable! " + e.getMessage());
         }
         catch (IOException e)
         {
-            fr4ekleme("Error while writing to the file: " + fileName + ". Reason: " + e.getMessage());
-            throw new FileCreationException("Error while writing to the file: " + fileName + ". Reason: " + e.getMessage());
+            System.out.println("Warning: Something went wrong! " + e.getMessage());
         }
     }
 
-    public static void CLEAR(){
+    private void processFileCommand(String command)
+    {
+        if (command == null || command.trim().isEmpty()) return;
+        commandArray = command.split(";");
+        processCommand();
+
+        //if(logging) log("PLZLOG/" + command);
+    }
+
+    private void load(String fileName){
+
+        if (fileName.endsWith(".txt"))
+        {
+            try (Scanner reader = new Scanner(Paths.get(fileName)))
+            {
+                while (reader.hasNextLine())
+                {
+                    processFileCommand(reader.nextLine());
+                }
+            }
+            catch (IOException e)
+            {
+                System.out.println("Something went wrong with file I/O!");
+            }
+            catch (SecurityException e)
+            {
+                System.out.println("Security Exception!");
+            }
+
+        }
+        else
+        {
+            FSM readFSM = null;
+            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
+                readFSM = (FSM) in.readObject();
+            }
+            catch (FileNotFoundException e)
+            {
+                System.out.println("Warning: File not found!");
+            }
+            catch (InvalidClassException e)
+            {
+                System.out.println("Warning: Version not compatible." );
+            }
+            catch (StreamCorruptedException e)
+            {
+                System.out.println("Warning: File corrupted.");
+            }
+            catch (OptionalDataException e)
+            {
+                System.out.println("Warning: Unexpected data found.");
+            }
+            catch (ClassNotFoundException e)
+            {
+                System.out.println("Warning: Class not found.");
+            }
+            catch (IOException e)
+            {
+                System.out.println("Warning: Something went wrong!");
+            }
+
+            if (readFSM == null);
+            this.setSymbolsList(readFSM.getSymbolsList());
+            this.setStatesList(readFSM.getStatesList());
+            this.setInitialState(readFSM.getInitialState());
+            this.setFinalStates(readFSM.getFinalStates());
+            this.setTransitionsList(readFSM.getTransitionsList());
+            this.setLogging(readFSM.getLogging());
+            System.out.println("Object loading successful!");
+        }
+    }
+
+    private void CLEAR(){
         initialState = "";
         statesList.clear();
         symbolsList.clear();
@@ -543,29 +623,31 @@ public class Main
 
         System.out.println("All FSM data cleared.");
         fr4ekleme("All FSM data cleared.");
-    }//fr12
-    public static void LOAD(String fileName)//fr13
-    {
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName)))
-        {
-            FSMDatas data = (FSMDatas) in.readObject();
-            initialState = data.initialState;
-            statesList = data.statesList;
-            symbolsList = data.symbolsList;
-            finalStates = data.finalStates;
-            transitionsList = data.transitionsList;
-            System.out.println("Datas from " + fileName + "  are read");
-            fr4ekleme("Datas from " + fileName + " are read");
-        }
-        catch (ClassNotFoundException | IOException e)
-        {
-            System.out.println("Error while loading data: " + e.getMessage());
-            fr4ekleme("Error while loading data: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
-    public static void EXECUTE(){
-         Scanner sc = new Scanner(System.in);
+
+//    private void LOAD(String fileName)//fr13
+//    {
+//        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName)))
+//        {
+//            FSMDatas data = (FSMDatas) in.readObject();
+//            initialState = data.initialState;
+//            statesList = data.statesList;
+//            symbolsList = data.symbolsList;
+//            finalStates = data.finalStates;
+//            transitionsList = data.transitionsList;
+//            System.out.println("Datas from " + fileName + "  are read");
+//            fr4ekleme("Datas from " + fileName + " are read");
+//        }
+//        catch (ClassNotFoundException | IOException e)
+//        {
+//            System.out.println("Error while loading data: " + e.getMessage());
+//            fr4ekleme("Error while loading data: " + e.getMessage());
+//            e.printStackTrace();
+//        }
+//    }
+
+    private void EXECUTE(){
+        Scanner sc = new Scanner(System.in);
         System.out.print("Enter the input string to execute: ");
         String inputString = sc.nextLine().trim().toUpperCase();
 
@@ -609,8 +691,8 @@ public class Main
     }//fr14
     //FR 15
 
-    public static void fr4ekleme(String a){
-        if(kayıt){
+    private void fr4ekleme(String a){
+        if(logging){
             FR4list.add(a);
         }
     }
