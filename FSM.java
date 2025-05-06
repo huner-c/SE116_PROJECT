@@ -459,7 +459,8 @@ public class FSM implements Serializable
         output.append("TRANSITIONS ");
         for (int i = 0; i < transitionsList.size(); i++) {
 
-            String[] parts = transitionsList.get(i).split("[-|>]");
+                        String[] parts = transitionsList.get(i).split("\\s+");
+
             if (parts.length == 3) {
                 output.append(parts[1]).append(" ").append(parts[0]).append(" ").append(parts[2]);
                 if (i < transitionsList.size() - 1) output.append(", ");
@@ -490,7 +491,8 @@ public class FSM implements Serializable
 
                 writer.write("TRANSITIONS ");
                 for (int i = 0; i < transitionsList.size(); i++) {
-                    String[] parts = transitionsList.get(i).split("[-|>]");
+                                String[] parts = transitionsList.get(i).split("\\s+");
+
                     if (parts.length == 3) {
                         writer.write(parts[1] + " " + parts[0] + " " + parts[2]);
                         if (i < transitionsList.size() - 1) writer.write(", ");
