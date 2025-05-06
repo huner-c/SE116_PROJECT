@@ -56,12 +56,12 @@ public class FSM implements Serializable
 
     private String commandEntered="";
     private String dosyaAdı="";
-    private String initialState = "";//////////////////////////////////////////
+    private String initialState = "";
     private ArrayList<String> FR4list=new ArrayList<>();
-    private ArrayList<String> statesList = new ArrayList<>();//////////////////
-    private ArrayList<String> symbolsList = new ArrayList<>();/////////////////
-    private ArrayList<String> finalStates = new ArrayList<>();/////////////////
-    private ArrayList<String> transitionsList = new ArrayList<>();/////////////
+    private ArrayList<String> statesList = new ArrayList<>();
+    private ArrayList<String> symbolsList = new ArrayList<>();
+    private ArrayList<String> finalStates = new ArrayList<>();
+    private ArrayList<String> transitionsList = new ArrayList<>();
     private String[] commandArray =null;
     private Formatter f_fr4=null;
     private boolean logging=false;
@@ -79,13 +79,17 @@ public class FSM implements Serializable
         }
     }
 
-    private void processCommandsFromFile(String fileName) {
-        try {
-            if (fileName == null || fileName.trim().isEmpty()) {
+    private void processCommandsFromFile(String fileName)
+    {
+        try
+        {
+            if (fileName == null || fileName.trim().isEmpty())
+            {
                 fr4ekleme("File name cannot be null or empty.");
                 throw new InvalidFileNameException("File name cannot be null or empty.");
             }
-            if (fileName.matches(".*[<>:\"/\\\\|?*].*") || fileName.contains("\0")) {
+            if (fileName.matches(".*[<>:\"/\\\\|?*].*") || fileName.contains("\0"))
+            {
                 fr4ekleme("File name contains invalid characters: " + fileName);
                 throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
             }
@@ -99,36 +103,35 @@ public class FSM implements Serializable
                     {
                         continue;
                     }
-                    if (line.contains(";")) {
-                        String commandOnly = line.split(";", 2)[0].trim(); // yorumları çıkar
-
+                    if (line.contains(";"))
+                    {
+                        String commandOnly = line.split(";", 2)[0].trim();
                         if (commandOnly.isEmpty()) return;
 
                         commandEntered = commandOnly;
-                        commandArray = commandOnly.split("\\s+"); // temiz split
+                        commandArray = commandOnly.split("\\s+");
 
-                        fr4ekleme(">> " + commandEntered); // logla istersen
-                        processCommand(); // burada zaten senin verdiğin kısım çalışıyor
+                        fr4ekleme(commandEntered);
+                        processCommand();
                     }
-
                     else
                     {
                         System.out.println("Invalid command format (missing semicolon): " + line);
                         fr4ekleme("Invalid command format (missing semicolon): " + line);
                     }
                 }
-            } catch (FileNotFoundException e)
+            }
+            catch (FileNotFoundException e)
             {
                 throw new FileAccessException("Cannot access the file: " + fileName + ". File not found.");
             }
-        } catch (InvalidFileNameException | FileAccessException e)
+        }
+        catch (InvalidFileNameException | FileAccessException e)
         {
             System.out.println(e.getMessage());
             fr4ekleme(e.getMessage());
         }
     }
-
-
     private void takeInput()
     {
         Scanner sc = new Scanner(System.in);
@@ -184,7 +187,7 @@ public class FSM implements Serializable
             {
                 try
                 {
-                    compile(commandArray[1]);
+                    COMPILE(commandArray[1]);
                 }
                 catch (FileCreationException | InvalidFileNameException e5)
                 {
@@ -249,8 +252,8 @@ public class FSM implements Serializable
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDateTime = now.format(formatter);
-        fr4ekleme("FSM DESIGNER <Update 03.05 10.52>  "+formattedDateTime);
-        System.out.println("FSM DESIGNER <Update 03.05 10.52>  "+formattedDateTime);
+        fr4ekleme("FSM DESIGNER <Update 06.05 21.10>  "+formattedDateTime);
+        System.out.println("FSM DESIGNER <Update 06.05 21.10>  "+formattedDateTime);
     }
     private void EXIT()
     {
@@ -513,13 +516,11 @@ public class FSM implements Serializable
             }
         }
     }
-
-    private void compile(String fileName)
+    private void COMPILE(String fileName)
     {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName)))
         {
             if(!Files.exists(Paths.get(fileName))) Files.createFile(Paths.get(fileName));
-
             out.writeObject(this);
             out.flush();
             System.out.println("Datas are serialized and to " + fileName + " written.");
@@ -537,43 +538,11 @@ public class FSM implements Serializable
             System.out.println("Warning: Something went wrong! " + e.getMessage());
         }
     }
-
-    private void processFileCommand(String command) {
-        if (command == null || command.trim().isEmpty()) return;
-
-        // Noktalı virgül öncesini al
-        String commandOnly = command.split(";", 2)[0].trim();
-
-        // Boşsa geç
-        if (commandOnly.isEmpty()) return;
-
-        commandEntered = commandOnly;
-        commandArray = commandOnly.split("\\s+"); // Komutu ve argümanları ayır
-
-        if (logging) fr4ekleme("PLZLOG/" + commandOnly);
-        processCommand();
-    }
-
-    private void load(String fileName){
-
+    private void load(String fileName)
+    {
         if (fileName.endsWith(".txt"))
         {
-            try (Scanner reader = new Scanner(Paths.get(fileName)))
-            {
-                while (reader.hasNextLine())
-                {
-                    processFileCommand(reader.nextLine());
-                }
-            }
-            catch (IOException e)
-            {
-                System.out.println("Something went wrong with file I/O!");
-            }
-            catch (SecurityException e)
-            {
-                System.out.println("Security Exception!");
-            }
-
+            processCommandsFromFile(fileName);
         }
         else
         {
@@ -617,17 +586,6 @@ public class FSM implements Serializable
         }
     }
 
-    private void CLEAR(){
-        initialState = "";
-        statesList.clear();
-        symbolsList.clear();
-        finalStates.clear();
-        transitionsList.clear();
-
-        System.out.println("All FSM data cleared.");
-        fr4ekleme("All FSM data cleared.");
-    }
-
 //    private void LOAD(String fileName)//fr13
 //    {
 //        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName)))
@@ -648,6 +606,18 @@ public class FSM implements Serializable
 //            e.printStackTrace();
 //        }
 //    }
+    
+    
+    private void CLEAR(){
+        initialState = "";
+        statesList.clear();
+        symbolsList.clear();
+        finalStates.clear();
+        transitionsList.clear();
+
+        System.out.println("All FSM data cleared.");
+        fr4ekleme("All FSM data cleared.");
+    }
     private void EXECUTE(){
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter the input string to execute: ");
@@ -716,9 +686,6 @@ public class FSM implements Serializable
         return input.matches("[a-zA-Z0-9]+");
     }
 }
-
-
-
 
 class InvalidFileNameException extends RuntimeException
 {
