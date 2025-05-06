@@ -611,46 +611,47 @@ public class FSM implements Serializable
         fr4ekleme("All FSM data cleared.");
     }
     private void EXECUTE(){
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter the input string to execute: ");
-        String inputString = sc.nextLine().trim().toUpperCase();
+       if (commandArray.length != 2) {
+            System.out.println("EXECUTE requires an input string.");
+            return;
+        }
 
+        String inputString = commandArray[1].toUpperCase();
         String currentState = initialState;
-        System.out.println("Starting execution from: " + currentState);
-        fr4ekleme("Starting execution from: " + currentState);
+
+        System.out.print(currentState + " ");
+        fr4ekleme(currentState);
 
         for (char symbol : inputString.toCharArray()) {
             String sym = String.valueOf(symbol);
-            boolean transitionFound = false;
+            boolean found = false;
 
             for (String transition : transitionsList) {
-                String[] parts = transition.split("[-|>]");
-                String fromState = parts[0];
-                String transSymbol = parts[1];
-                String toState = parts[2];
+                String[] parts = transition.split("\\s+");
+                if (parts.length != 3) continue;
 
-                if (fromState.equals(currentState) && transSymbol.equals(sym)) {
-                    System.out.println("Transition: " + currentState + " -" + sym + "-> " + toState);
-                    fr4ekleme("Transition: " + currentState + " -" + sym + "-> " + toState);
-                    currentState = toState;
-                    transitionFound = true;
+                if (parts[0].equals(sym) && parts[1].equals(currentState)) {
+                    currentState = parts[2];
+                    System.out.print(currentState + " ");
+                    fr4ekleme(currentState);
+                    found = true;
                     break;
                 }
             }
 
-            if (!transitionFound) {
-                System.out.println("Rejected: No transition found for symbol '" + sym + "' from state " + currentState);
-                fr4ekleme("Rejected: No transition found for symbol '" + sym + "' from state " + currentState);
+            if (!found) {
+                System.out.println("NO");
+                fr4ekleme("NO");
                 return;
             }
         }
 
         if (finalStates.contains(currentState)) {
-            System.out.println("Accepted! Final state reached: " + currentState);
-            fr4ekleme("Accepted! Final state reached: " + currentState);
+            System.out.println("YES");
+            fr4ekleme("YES");
         } else {
-            System.out.println("Rejected: Final state not reached. Stopped at " + currentState);
-            fr4ekleme("Rejected: Final state not reached. Stopped at " + currentState);
+            System.out.println("NO");
+            fr4ekleme("NO");
         }
     }
     private void fr4ekleme(String a)
