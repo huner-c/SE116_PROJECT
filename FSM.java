@@ -49,10 +49,10 @@ public class FSM implements Serializable
     public boolean getLogging() {
         return logging;
     }
+
     public void setLogging(boolean logging) {
         this.logging = logging;
     }
-
 
     private String commandEntered="";
     private String dosyaAdı="";
@@ -71,7 +71,7 @@ public class FSM implements Serializable
         VERSION_CONTROL();
         if (args.length != 0)
         {
-            //processCommandsFromFile(args[0]);
+            processCommandsFromFile(args[0]);
         }
         else
         {
@@ -79,61 +79,60 @@ public class FSM implements Serializable
         }
     }
 
-//    public static void processCommandsFromFile(String fileName)
-//    {
-//        try {
-//            if (fileName == null || fileName.trim().isEmpty())
-//            {
-//                fr4ekleme("File name cannot be null or empty.");
-//                throw new InvalidFileNameException("File name cannot be null or empty.");
-//            }
-//            if (fileName.matches(".*[<>:\"/\\|?*].*") || fileName.contains("\0"))
-//            {
-//                fr4ekleme("File name contains invalid characters: " + fileName);
-//                throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
-//            }
-//            try (BufferedReader reader = new BufferedReader(new FileReader(fileName)))
-//            {
-//                String line;
-//                while ((line = reader.readLine()) != null)
-//                {
-//                    if (line.trim().isEmpty())
-//                    {
-//                        continue;
-//                    }
-//                    if (line.contains(";"))
-//                    {
-//                        commandEntered = line.replaceAll("\n", " ").split(";", 2)[0].trim();
-//                        commandArray = commandEntered.split(" ");
-//                        hub();
-//                    }
-//                    else
-//                    {
-//                        System.out.println("Invalid command format (missing semicolon): " + line);
-//                        fr4ekleme("Invalid command format (missing semicolon): " + line);
-//                    }
-//                }
-//            }
-//            catch (FileNotFoundException e)
-//            {
-//                throw new FileAccessException("Cannot access the file: " + fileName + ". File not found.");
-//            }
-//            catch (IOException e)
-//            {
-//                throw new FileAccessException("Error while reading the file: " + fileName + ". Reason: " + e.getMessage());
-//            }
-//        }
-//        catch (InvalidFileNameException | FileAccessException e)
-//        {
-//            System.out.println(e.getMessage());
-//            fr4ekleme(e.getMessage());
-//        }
-//    }
+    private void processCommandsFromFile(String fileName) {
+        try {
+            if (fileName == null || fileName.trim().isEmpty()) {
+                fr4ekleme("File name cannot be null or empty.");
+                throw new InvalidFileNameException("File name cannot be null or empty.");
+            }
+            if (fileName.matches(".*[<>:\"/\\\\|?*].*") || fileName.contains("\0")) {
+                fr4ekleme("File name contains invalid characters: " + fileName);
+                throw new InvalidFileNameException("File name contains invalid characters: " + fileName);
+            }
+
+            try (Scanner scanner = new Scanner(new File(fileName)))
+            {
+                while (scanner.hasNextLine())
+                {
+                    String line = scanner.nextLine().trim();
+                    if (line.isEmpty())
+                    {
+                        continue;
+                    }
+                    if (line.contains(";")) {
+                        String commandOnly = line.split(";", 2)[0].trim(); // yorumları çıkar
+
+                        if (commandOnly.isEmpty()) return;
+
+                        commandEntered = commandOnly;
+                        commandArray = commandOnly.split("\\s+"); // temiz split
+
+                        fr4ekleme(">> " + commandEntered); // logla istersen
+                        processCommand(); // burada zaten senin verdiğin kısım çalışıyor
+                    }
+
+                    else
+                    {
+                        System.out.println("Invalid command format (missing semicolon): " + line);
+                        fr4ekleme("Invalid command format (missing semicolon): " + line);
+                    }
+                }
+            } catch (FileNotFoundException e)
+            {
+                throw new FileAccessException("Cannot access the file: " + fileName + ". File not found.");
+            }
+        } catch (InvalidFileNameException | FileAccessException e)
+        {
+            System.out.println(e.getMessage());
+            fr4ekleme(e.getMessage());
+        }
+    }
+
 
     private void takeInput()
     {
         Scanner sc = new Scanner(System.in);
-        StringBuilder builder = new StringBuilder(); // Çok satırlı komutları birleştirmek için
+        StringBuilder builder = new StringBuilder();
         while (true)
         {
             System.out.print("? ");
@@ -181,7 +180,6 @@ public class FSM implements Serializable
             else if (commandArray[0].equals("PRINT") && commandArray.length==2){
                 PRINT();
             }
-
             else if(commandArray[0].equalsIgnoreCase("COMPILE") && commandArray.length==2)
             {
                 try
@@ -193,7 +191,6 @@ public class FSM implements Serializable
                     System.out.println(e5.getMessage());
                 }
             }
-
             else if(commandArray[0].equals("LOAD")&& commandArray.length==2){
                 load(commandArray[1]);
             }
@@ -215,6 +212,9 @@ public class FSM implements Serializable
             }
             else if (commandEntered.equals("LOG")) {
                 LOG_();
+            }
+            else if (commandEntered.equals("STATES")) {
+                STATES_();
             }
             else if (commandEntered.equalsIgnoreCase("COMPILE"))
             {
@@ -303,8 +303,6 @@ public class FSM implements Serializable
                 System.out.println(data+" is not alphanumeric");
                 fr4ekleme(data +" is not alphanumeric");
             }
-
-
         }
     }
     private void SYMBOLS_(){
@@ -343,8 +341,11 @@ public class FSM implements Serializable
                 fr4ekleme(incomingArray[i]+" is not alphanumeric");
             }
         }
-    }//fr6
-
+    }
+    private void STATES_()
+    {
+        System.out.println(statesList);
+    }
     private void INITIAL_STATE(){
         String state = commandArray[1];
 
@@ -359,7 +360,7 @@ public class FSM implements Serializable
             fr4ekleme("Warning: state has not been declared yet, added to list");
         }
         initialState = state;
-    }//fr8
+    }
     private void FINAL_STATES(){
         String states = commandEntered.substring(commandEntered.indexOf(" ") + 1).trim();
         String[] stateArray = states.split("[,\\s]+"); // hem boşluk hem virgül ile ayırıyor artık
@@ -434,11 +435,10 @@ public class FSM implements Serializable
         transitionsList.add(transition);
         System.out.println("Transition added: " + transition);
         fr4ekleme("Transition added: " + transition);
-    }//fr9
-    private void PRINT()//fr10
+    }
+    private void PRINT()
     {
         StringBuilder output = new StringBuilder();
-
 
         output.append("SYMBOLS {");
         for (int i = 0; i < symbolsList.size(); i++) {
@@ -447,7 +447,6 @@ public class FSM implements Serializable
         }
         output.append("}\n");
 
-
         output.append("STATES {");
         for (int i = 0; i < statesList.size(); i++) {
             output.append(statesList.get(i));
@@ -455,9 +454,7 @@ public class FSM implements Serializable
         }
         output.append("}\n");
 
-
         output.append("INITIAL STATE ").append(initialState).append("\n");
-
 
         output.append("FINAL STATES {");
         for (int i = 0; i < finalStates.size(); i++) {
@@ -465,7 +462,6 @@ public class FSM implements Serializable
             if (i < finalStates.size() - 1) output.append(",");
         }
         output.append("}\n");
-
 
         output.append("TRANSITIONS ");
         for (int i = 0; i < transitionsList.size(); i++) {
@@ -542,13 +538,20 @@ public class FSM implements Serializable
         }
     }
 
-    private void processFileCommand(String command)
-    {
+    private void processFileCommand(String command) {
         if (command == null || command.trim().isEmpty()) return;
-        commandArray = command.split(";");
-        processCommand();
 
-        //if(logging) log("PLZLOG/" + command);
+        // Noktalı virgül öncesini al
+        String commandOnly = command.split(";", 2)[0].trim();
+
+        // Boşsa geç
+        if (commandOnly.isEmpty()) return;
+
+        commandEntered = commandOnly;
+        commandArray = commandOnly.split("\\s+"); // Komutu ve argümanları ayır
+
+        if (logging) fr4ekleme("PLZLOG/" + commandOnly);
+        processCommand();
     }
 
     private void load(String fileName){
@@ -645,7 +648,6 @@ public class FSM implements Serializable
 //            e.printStackTrace();
 //        }
 //    }
-
     private void EXECUTE(){
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter the input string to execute: ");
@@ -688,10 +690,9 @@ public class FSM implements Serializable
             System.out.println("Rejected: Final state not reached. Stopped at " + currentState);
             fr4ekleme("Rejected: Final state not reached. Stopped at " + currentState);
         }
-    }//fr14
-    //FR 15
-
-    private void fr4ekleme(String a){
+    }
+    private void fr4ekleme(String a)
+    {
         if(logging){
             FR4list.add(a);
         }
@@ -715,6 +716,7 @@ public class FSM implements Serializable
         return input.matches("[a-zA-Z0-9]+");
     }
 }
+
 
 
 
