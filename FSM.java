@@ -390,54 +390,44 @@ public class FSM implements Serializable
         }
     }
     private void TRANSITIONS(){
-        String input = commandArray[1];
+        String all = commandEntered.substring(commandEntered.indexOf(" ") + 1).trim();
+        String[] transitionArray = all.split(",");
 
-        if (!input.contains("-") || !input.contains(">")) {
-            System.out.println("Invalid transition format. Use: FROM-SYMBOL>TO");
-            fr4ekleme("Invalid transition format. Use: FROM-SYMBOL>TO");
-            return;
+        for (String transition : transitionArray) {
+            String[] parts = transition.trim().split("\\s+");
+            if (parts.length != 3) {
+                System.out.println("Invalid transition format: " + transition);
+                fr4ekleme("Invalid transition format: " + transition);
+                continue;
+            }
+
+            String symbol = parts[0].toUpperCase();
+            String fromState = parts[1].toUpperCase();
+            String toState = parts[2].toUpperCase();
+
+            if (!symbolsList.contains(symbol)) {
+                System.out.println("Invalid symbol: " + symbol);
+                fr4ekleme("Invalid symbol: " + symbol);
+                continue;
+            }
+
+            if (!statesList.contains(fromState)) {
+                System.out.println("Invalid from-state: " + fromState);
+                fr4ekleme("Invalid from-state: " + fromState);
+                continue;
+            }
+
+            if (!statesList.contains(toState)) {
+                System.out.println("Invalid to-state: " + toState);
+                fr4ekleme("Invalid to-state: " + toState);
+                continue;
+            }
+
+            String transitionStr = symbol + " " + fromState + " " + toState;
+            transitionsList.add(transitionStr);
+            System.out.println("Transition added: " + transitionStr);
+            fr4ekleme("Transition added: " + transitionStr);
         }
-
-        String[] parts = input.split("[-]>");
-        if (parts.length != 3) {
-            System.out.println("Transition must be in the format FROM-SYMBOL>TO");
-            fr4ekleme("Transition must be in the format FROM-SYMBOL>TO");
-            return;
-        }
-
-        String fromState = parts[0].toUpperCase();
-        String symbol = parts[1].toUpperCase();
-        String toState = parts[2].toUpperCase();
-
-        if (!statesList.contains(fromState)) {
-            System.out.println("FROM state not defined: " + fromState);
-            fr4ekleme("FROM state not defined: " + fromState);
-            return;
-        }
-
-        if (!statesList.contains(toState)) {
-            System.out.println("TO state not defined: " + toState);
-            fr4ekleme("TO state not defined: " + toState);
-            return;
-        }
-
-        if (!symbolsList.contains(symbol)) {
-            System.out.println("SYMBOL not defined: " + symbol);
-            fr4ekleme("SYMBOL not defined: " + symbol);
-            return;
-        }
-
-        String transition = fromState + "-" + symbol + ">" + toState;
-
-        if (transitionsList.contains(transition)) {
-            System.out.println("Transition already exists: " + transition);
-            fr4ekleme("Transition already exists: " + transition);
-            return;
-        }
-
-        transitionsList.add(transition);
-        System.out.println("Transition added: " + transition);
-        fr4ekleme("Transition added: " + transition);
     }
     private void PRINT()
     {
