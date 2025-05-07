@@ -39,7 +39,6 @@ class FSM implements Serializable
             takeInput();
         }
     }
-
     private void processCommandsFromFile(String fileName)
     {
         try
@@ -113,7 +112,7 @@ class FSM implements Serializable
             }
         }
     }
-    private void processCommand() throws InvalidInputException {
+    private void processCommand()  {
         System.out.println(Arrays.toString(commandArray));
 
         if(commandArray.length>=2)
