@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-class Main
+public class Main
 {
     public static void main(String[] args)
     {
@@ -13,49 +13,10 @@ class Main
         fsm.START(args);
     }
 }
-
-public class FSM implements Serializable
+class FSM implements Serializable
 {
-    public String getInitialState() {
-        return initialState;
-    }
-    public void setInitialState(String initialState) {
-        this.initialState = initialState;
-    }
-    public ArrayList<String> getTransitionsList() {
-        return transitionsList;
-    }
-    public void setTransitionsList(ArrayList<String> transitionsList) {
-        this.transitionsList = transitionsList;
-    }
-    public ArrayList<String> getFinalStates() {
-        return finalStates;
-    }
-    public void setFinalStates(ArrayList<String> finalStates) {
-        this.finalStates = finalStates;
-    }
-    public ArrayList<String> getSymbolsList() {
-        return symbolsList;
-    }
-    public void setSymbolsList(ArrayList<String> symbolsList) {
-        this.symbolsList = symbolsList;
-    }
-    public ArrayList<String> getStatesList() {
-        return statesList;
-    }
-    public void setStatesList(ArrayList<String> statesList) {
-        this.statesList = statesList;
-    }
-    public boolean getLogging() {
-        return logging;
-    }
-
-    public void setLogging(boolean logging) {
-        this.logging = logging;
-    }
-
     private String commandEntered="";
-    private String dosyaAdı="";
+    private String fileName="";
     private String initialState = "";
     private ArrayList<String> FR4list=new ArrayList<>();
     private ArrayList<String> statesList = new ArrayList<>();
@@ -110,7 +71,6 @@ public class FSM implements Serializable
 
                         commandEntered = commandOnly;
                         commandArray = commandOnly.split("\\s+");
-
                         fr4ekleme(commandEntered);
                         processCommand();
                     }
@@ -153,8 +113,7 @@ public class FSM implements Serializable
             }
         }
     }
-    private void processCommand()
-    {
+    private void processCommand() throws InvalidInputException {
         System.out.println(Arrays.toString(commandArray));
 
         if(commandArray.length>=2)
@@ -162,7 +121,7 @@ public class FSM implements Serializable
             String[] fr4kelime2dizisi = commandArray[1].split("");
 
             if(commandArray[0].equals("LOG") && commandArray[1].startsWith("<") && commandArray[1].endsWith(">")){
-                dosyaAdı=commandArray[1].substring(1,commandArray[1].length()-1);
+                fileName=commandArray[1].substring(1,commandArray[1].length()-1);
                 LOG();
             }
             else if (commandArray[0].equals("SYMBOLS")) {
@@ -267,7 +226,7 @@ public class FSM implements Serializable
     }
     private void LOG_(){
         try {
-            f_fr4 = new Formatter(dosyaAdı+".txt");
+            f_fr4 = new Formatter(fileName+".txt");
             for (String aa:FR4list){
                 f_fr4.format("%s \n", aa);
             }
@@ -429,6 +388,8 @@ public class FSM implements Serializable
             fr4ekleme("Transition added: " + transitionStr);
         }
     }
+
+
     private void PRINT()
     {
         StringBuilder output = new StringBuilder();
@@ -459,7 +420,7 @@ public class FSM implements Serializable
         output.append("TRANSITIONS ");
         for (int i = 0; i < transitionsList.size(); i++) {
 
-                        String[] parts = transitionsList.get(i).split("\\s+");
+            String[] parts = transitionsList.get(i).split("\\s+");
 
             if (parts.length == 3) {
                 output.append(parts[1]).append(" ").append(parts[0]).append(" ").append(parts[2]);
@@ -491,7 +452,7 @@ public class FSM implements Serializable
 
                 writer.write("TRANSITIONS ");
                 for (int i = 0; i < transitionsList.size(); i++) {
-                                String[] parts = transitionsList.get(i).split("\\s+");
+                    String[] parts = transitionsList.get(i).split("\\s+");
 
                     if (parts.length == 3) {
                         writer.write(parts[1] + " " + parts[0] + " " + parts[2]);
@@ -568,9 +529,9 @@ public class FSM implements Serializable
             }
 
             if (readFSM == null) {
-    System.out.println("Error: Failed to load FSM from file.");
-    return;
-}
+                System.out.println("Error: Failed to load FSM from file.");
+                return;
+            }
             this.setSymbolsList(readFSM.getSymbolsList());
             this.setStatesList(readFSM.getStatesList());
             this.setInitialState(readFSM.getInitialState());
@@ -581,28 +542,6 @@ public class FSM implements Serializable
         }
     }
 
-//    private void LOAD(String fileName)//fr13
-//    {
-//        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName)))
-//        {
-//            FSMDatas data = (FSMDatas) in.readObject();
-//            initialState = data.initialState;
-//            statesList = data.statesList;
-//            symbolsList = data.symbolsList;
-//            finalStates = data.finalStates;
-//            transitionsList = data.transitionsList;
-//            System.out.println("Datas from " + fileName + "  are read");
-//            fr4ekleme("Datas from " + fileName + " are read");
-//        }
-//        catch (ClassNotFoundException | IOException e)
-//        {
-//            System.out.println("Error while loading data: " + e.getMessage());
-//            fr4ekleme("Error while loading data: " + e.getMessage());
-//            e.printStackTrace();
-//        }
-//    }
-    
-    
     private void CLEAR(){
         initialState = "";
         statesList.clear();
@@ -614,7 +553,7 @@ public class FSM implements Serializable
         fr4ekleme("All FSM data cleared.");
     }
     private void EXECUTE(){
-       if (commandArray.length != 2) {
+        if (commandArray.length != 2) {
             System.out.println("EXECUTE requires an input string.");
             return;
         }
@@ -681,6 +620,44 @@ public class FSM implements Serializable
         }
         return input.matches("[a-zA-Z0-9]+");
     }
+
+
+    public String getInitialState() {
+        return initialState;
+    }
+    public void setInitialState(String initialState) {
+        this.initialState = initialState;
+    }
+    public ArrayList<String> getTransitionsList() {
+        return transitionsList;
+    }
+    public void setTransitionsList(ArrayList<String> transitionsList) {
+        this.transitionsList = transitionsList;
+    }
+    public ArrayList<String> getFinalStates() {
+        return finalStates;
+    }
+    public void setFinalStates(ArrayList<String> finalStates) {
+        this.finalStates = finalStates;
+    }
+    public ArrayList<String> getSymbolsList() {
+        return symbolsList;
+    }
+    public void setSymbolsList(ArrayList<String> symbolsList) {
+        this.symbolsList = symbolsList;
+    }
+    public ArrayList<String> getStatesList() {
+        return statesList;
+    }
+    public void setStatesList(ArrayList<String> statesList) {
+        this.statesList = statesList;
+    }
+    public boolean getLogging() {
+        return logging;
+    }
+    public void setLogging(boolean logging) {
+        this.logging = logging;
+    }
 }
 
 class InvalidFileNameException extends RuntimeException
@@ -702,5 +679,10 @@ class FileAccessException extends Exception
     public FileAccessException(String message)
     {
         super(message);
+    }
+}
+class InvalidInputException extends RuntimeException {
+    public InvalidInputException(String culprit) {
+        super("Warning: Invalid Input " + culprit);
     }
 }
