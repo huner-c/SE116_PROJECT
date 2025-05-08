@@ -308,7 +308,7 @@ class FSM implements Serializable
         System.out.println(statesList);
     }
     private void INITIAL_STATE(){
-        String state = commandArray[1];
+        String state = commandArray[1].toUpperCase();
 
         if (!state.matches("[a-zA-Z0-9]+")) {
             System.out.println("Warning: state is not alphanumeric");
@@ -323,7 +323,7 @@ class FSM implements Serializable
         initialState = state;
     }
     private void FINAL_STATES(){
-        String states = commandEntered.substring(commandEntered.indexOf(" ") + 1).trim();
+        String states = commandEntered.substring(commandEntered.indexOf(" ") + 1).trim().toUpperCase();
         String[] stateArray = states.split("[,\\s]+"); // hem boşluk hem virgül ile ayırıyor artık
 
         for (String state : stateArray) {
@@ -386,6 +386,7 @@ class FSM implements Serializable
             System.out.println("Transition added: " + transitionStr);
             fr4ekleme("Transition added: " + transitionStr);
         }
+
     }
 
 
