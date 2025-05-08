@@ -79,6 +79,7 @@ class FSM implements Serializable
                         fr4ekleme("Invalid command format (missing semicolon): " + line);
                     }
                 }
+                takeInput();
             }
             catch (FileNotFoundException e)
             {
@@ -99,16 +100,18 @@ class FSM implements Serializable
         {
             System.out.print("? ");
             String currentLine = sc.nextLine();
-            builder.append(currentLine);
+            builder.append(currentLine.trim());
 
             if (currentLine.contains(";"))
             {
                 commandEntered = builder.toString();
                 commandEntered = commandEntered.replaceAll("\n", " ");
                 commandEntered = commandEntered.split(";", 2)[0].trim();
-                commandArray = commandEntered.split(" ");
+                commandArray = commandEntered.split("\\s+");
                 processCommand();
                 builder.setLength(0);
+            } else {
+                builder.append(" ");
             }
         }
     }
@@ -119,8 +122,8 @@ class FSM implements Serializable
         {
             String[] fr4kelime2dizisi = commandArray[1].split("");
 
-            if(commandArray[0].equals("LOG") && commandArray[1].startsWith("<") && commandArray[1].endsWith(">")){
-                fileName=commandArray[1].substring(1,commandArray[1].length()-1);
+            if(commandArray[0].equals("LOG")){
+                fileName=commandArray[1];
                 LOG();
             }
             else if (commandArray[0].equals("SYMBOLS")) {
@@ -434,32 +437,44 @@ class FSM implements Serializable
         fr4ekleme(result);
 
         if (commandArray.length == 2) {
+            if(!commandArray[1].endsWith(".txt")) commandArray[1] += ".txt";
             String filename = commandArray[1];
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-                writer.write("SYMBOLS ");
-                for (String symbol : symbolsList) writer.write(symbol + " ");
-                writer.write(";\n");
-
-                writer.write("STATES ");
-                for (String state : statesList) writer.write(state + " ");
-                writer.write(";\n");
-
-                writer.write("INITIAL-STATE " + initialState + ";\n");
-
-                writer.write("FINAL-STATES ");
-                for (String state : finalStates) writer.write(state + " ");
-                writer.write(";\n");
-
-                writer.write("TRANSITIONS ");
-                for (int i = 0; i < transitionsList.size(); i++) {
-                    String[] parts = transitionsList.get(i).split("\\s+");
-
-                    if (parts.length == 3) {
-                        writer.write(parts[1] + " " + parts[0] + " " + parts[2]);
-                        if (i < transitionsList.size() - 1) writer.write(", ");
-                    }
+                if(!symbolsList.isEmpty()) {
+                    writer.write("SYMBOLS ");
+                    for (String symbol : symbolsList) writer.write(symbol + " ");
+                    writer.write(";\n");
                 }
-                writer.write(";\n");
+
+                if(!statesList.isEmpty()) {
+                    writer.write("STATES ");
+                    for (String state : statesList) writer.write(state + " ");
+                    writer.write(";\n");
+                }
+
+                if(!initialState.isEmpty()) {
+                    writer.write("INITIAL-STATE " + initialState + ";\n");
+                }
+
+                if(!finalStates.isEmpty()) {
+                    writer.write("FINAL-STATES ");
+                    for (String state : finalStates) writer.write(state + " ");
+                    writer.write(";\n");
+                }
+
+                if(!transitionsList.isEmpty()) {
+                    writer.write("TRANSITIONS ");
+                    for (int i = 0; i < transitionsList.size(); i++) {
+                        String[] parts = transitionsList.get(i).split("\\s+");
+
+                        if (parts.length == 3) {
+                            writer.write(parts[1] + " " + parts[0] + " " + parts[2]);
+                            if (i < transitionsList.size() - 1) writer.write(", ");
+                        }
+                    }
+                    writer.write(";\n");
+                }
+
 
                 System.out.println("FSM data written to file: " + filename);
                 fr4ekleme("FSM data written to file: " + filename);
