@@ -394,7 +394,6 @@ class FSM implements Serializable
             if(symbolsList.contains(anlıkdizi[0].toUpperCase()) && statesList.contains(anlıkdizi[1].toUpperCase()) && statesList.contains(anlıkdizi[2].toUpperCase())){
                 String line1=anlıkdizi[0].toUpperCase()+anlıkdizi[1].toUpperCase();
                 String line2=anlıkdizi[2].toUpperCase();
-                varmıydı1=false;
                 if(transitionsList.isEmpty() && transitionsList1.isEmpty()){
                     transitionsList.add(line1);
                     transitionsList1.add(line2);
