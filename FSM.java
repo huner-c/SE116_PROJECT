@@ -1,6 +1,8 @@
+import javax.swing.plaf.PanelUI;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLOutput;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -29,7 +31,7 @@ class FSM implements Serializable
     private String[] commandArray =null;
     private Formatter f_fr4=null;
     private boolean logging=false;
-    private String comment;
+    private String comment="";
 
     public void START(String[] args)
     {
@@ -125,8 +127,17 @@ class FSM implements Serializable
     }
     private void processCommand()
     {
+
+
+        String line="";
+        for(String aa:commandArray){
+            line+=aa;
+        }
+        System.out.println(line+";"+comment);
+        System.out.println(logging);
         if(logging){
-            fr4ekleme(commandEntered);
+            System.out.println("loggin  true");
+            System.out.println(line+";"+comment);
         }
 
         if(commandArray.length>=2)
@@ -233,35 +244,40 @@ class FSM implements Serializable
     }
     private void EXIT()
     {
-        fr4ekleme("TERMINATED BY USER");
-        System.out.println("TERMINATED BY USER");
-
-        try {
-            f_fr4 = new Formatter(fileName);
-            for (String aa:FR4list){
-                f_fr4.format("%s \n", aa);
-            }
-
-        } catch (Exception e) {
-            System.out.println("LOGGING was not enabled");
-            System.out.println("file cannot be created, written, etc");
-            System.out.println(e.getMessage());
-            fr4ekleme("file cannot be created, written, etc");
-        }finally {
-            if(f_fr4!=null){
-                System.out.println("STOPPED LOGGING");
-                fr4ekleme("STOPPED LOGGING");
-                f_fr4.close();
-            }
-        }
         System.exit(0);
     }
     private void LOG(){
+        System.out.println("LOG içerisindesin");
         logging = true;
         FR4list.clear();
     }
     private void LOG_(){
+        if(logging){
+            fr4ekleme("TERMINATED BY USER");
+            System.out.println("TERMINATED BY USER");
 
+            try {
+                f_fr4 = new Formatter(fileName);
+                for (String aa:FR4list){
+                    f_fr4.format("%s \n", aa);
+                }
+
+            } catch (Exception e) {
+                System.out.println("LOGGING was not enabled");
+                System.out.println("file cannot be created, written, etc");
+                System.out.println(e.getMessage());
+                fr4ekleme("file cannot be created, written, etc");
+            }finally {
+                if(f_fr4!=null){
+                    System.out.println("STOPPED LOGGING");
+                    fr4ekleme("STOPPED LOGGING");
+                    f_fr4.close();
+                }
+            }
+        }else{
+            System.out.println("LOGGING was not enabled");
+            fr4ekleme("LOGGING was not enabled");
+        }
     }
     private void SYMBOLS(String[] incomingArray){
         for(int i=1;i<incomingArray.length;i++){
@@ -323,8 +339,7 @@ class FSM implements Serializable
             }
         }
     }
-    private void STATES_()
-    {
+    private void STATES_() {
         System.out.println(statesList);
     }
     private void INITIAL_STATE(){
@@ -609,27 +624,25 @@ class FSM implements Serializable
         System.out.println("All FSM data cleared.");
         fr4ekleme("All FSM data cleared.");
     }
-    private void EXECUTE(String[] incomingArray)
-    {
-        if(transitionsList1.isEmpty())
-        {
+    private void EXECUTE(String[] incomingArray) {
+        if(transitionsList.isEmpty()) {
             System.out.println("Could not find any transition");
             return;
         }
-        if(finalStates.isEmpty())
-        {
+        if(finalStates.isEmpty()) {
             System.out.println("Could not find any final state");
             return;
         }
         String[]anlıkdizi1 = incomingArray[1].split("");
-        String line = "";
-        for (String aa : anlıkdizi1)
-        {
-            if(aa.equals(" "))
-            {
+        for(String aa:anlıkdizi1){
+            if(!symbolsList.contains(aa)){
+                System.out.println(aa+" was not previously declared as a symbol");
+                return;
             }
-            else
-            {
+        }
+        String line = "";
+        for (String aa : anlıkdizi1){
+            if(!aa.equals(" ")) {
                 line += aa;
             }
         }
@@ -638,8 +651,20 @@ class FSM implements Serializable
         System.out.print(anlıkstate+" ");
         for(String aa:anlıkdizi){
             String abc=aa+anlıkstate;
-            int k=transitionsList.indexOf(abc);
-            anlıkstate=transitionsList1.get(k);
+
+
+            try{
+                int k=transitionsList.indexOf(abc);
+                anlıkstate=transitionsList1.get(k);
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println();
+                System.out.println(abc.substring(0,1)+" "+abc.substring(1,abc.length())+" Such a transition has not been defined");
+                fr4ekleme(abc.substring(0,1)+" "+abc.substring(1,abc.length())+" Such a transition has not been defined");
+                return;
+            }
+
+
+
             System.out.print(anlıkstate+" ");
         }
         for(String aa:finalStates){
@@ -778,6 +803,11 @@ class FileAccessException extends Exception
     {
         super(message);
     }
+}
+class TransitionsWay extends Exception{
+   public  TransitionsWay(String message){
+       super(message);
+   }
 }
 class InvalidInputException extends RuntimeException {
     public InvalidInputException(String culprit) {
