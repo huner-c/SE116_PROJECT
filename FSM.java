@@ -6,11 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
-
-
-
-
-
 ///                                  IF CODING IS A ART, THEN I AM THE MONA LISA
 
 
@@ -37,6 +32,7 @@ class FSM implements Serializable
     private String[] commandArray =null;
     private Formatter f_fr4=null;
     private boolean logging=false;
+    private String comment;
 
     public void START(String[] args)
     {
@@ -115,18 +111,23 @@ class FSM implements Serializable
 
             if (currentLine.contains(";"))
             {
+                
                 commandEntered = builder.toString();
                 commandEntered = commandEntered.replaceAll("\n", " ");
+                comment = commandEntered.split(";", 2)[1].trim();
                 commandEntered = commandEntered.split(";", 2)[0].trim();
                 commandArray = commandEntered.split("\\s+");
                 processCommand();
                 builder.setLength(0);
-            } else {
+            } 
+            else 
+            {
                 builder.append(" ");
             }
         }
     }
-    private void processCommand()  {
+    private void processCommand()
+    {
         System.out.println(Arrays.toString(commandArray));
         if(logging){
             fr4ekleme(commandEntered);
@@ -391,7 +392,7 @@ class FSM implements Serializable
             if(symbolsList.contains(anlıkdizi[0].toUpperCase()) && statesList.contains(anlıkdizi[1].toUpperCase()) && statesList.contains(anlıkdizi[2].toUpperCase())){
                 String line1=anlıkdizi[0].toUpperCase()+anlıkdizi[1].toUpperCase();
                 String line2=anlıkdizi[2].toUpperCase();
-                 varmıydı1=false;
+                varmıydı1=false;
                 if(transitionsList.isEmpty() && transitionsList1.isEmpty()){
                     transitionsList.add(line1);
                     transitionsList1.add(line2);
@@ -493,7 +494,7 @@ class FSM implements Serializable
                     writer.write(";\n");
                 }
 
-               
+
                 if(!transitionsList.isEmpty()) {
                     writer.write("TRANSITIONS");
                     writer.write(" ");
