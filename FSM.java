@@ -6,7 +6,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
-///          IF CODING IS AN ART, THEN I AM THE MONA LISA
+
+
+
+
+
+///                                  IF CODING IS A ART, THEN I AM THE MONA LISA
+
 
 
 public class Main
@@ -31,7 +37,6 @@ class FSM implements Serializable
     private String[] commandArray =null;
     private Formatter f_fr4=null;
     private boolean logging=false;
-    private String comment;
 
     public void START(String[] args)
     {
@@ -111,10 +116,9 @@ class FSM implements Serializable
             if (currentLine.contains(";"))
             {
                 commandEntered = builder.toString();
-                commandEntered = commandEntered.replaceAll("\n", " "); //alt satira gecince bosluk yaratir
-                comment = commandEntered.split(";", 2)[1].trim();
-                commandEntered = commandEntered.split(";", 2)[0].trim();     //en fazla 2 parcaya boler ve ilk parcasini alir
-                commandArray = commandEntered.split("\\s+"); // her bosluktan ayirip dizi olusturur 5 bosluk 1 bosluk gibi alinir
+                commandEntered = commandEntered.replaceAll("\n", " ");
+                commandEntered = commandEntered.split(";", 2)[0].trim();
+                commandArray = commandEntered.split("\\s+");
                 processCommand();
                 builder.setLength(0);
             } else {
@@ -122,39 +126,28 @@ class FSM implements Serializable
             }
         }
     }
-    private void processCommand()
-    {
-        System.out.println(commandEntered + "; " + comment);
+    private void processCommand()  {
         System.out.println(Arrays.toString(commandArray));
+        if(logging){
+            fr4ekleme(commandEntered);
+        }
 
-
-        if(commandArray.length >= 2) // commandArray uzunlugu 1 den fazla ise bura calisacak (girdi isteyen komutlar)
+        if(commandArray.length>=2)
         {
-            String[] fr4kelime2dizisi = commandArray[1].split("");
 
-            //commandArray in 0. elemani komut olmali
 
-            if(commandArray[0].equalsIgnoreCase("LOG")) //GEL
-            {
-                if(commandArray[1].endsWith(".txt"))
-                {
+            if(commandArray[0].equals("LOG")){
+                if(commandArray[1].endsWith(".txt")){
                     fileName=commandArray[1];
                 }else{
                     fileName=commandArray[1]+".txt";
                 }
                 LOG();
             }
-
-            else if (commandArray[0].equals("SYMBOLS")) //OK
-            {
-                SYMBOLS(commandArray); //komut arrayi sunun gibi olacak SYMBOLS, 1, 2, 3
+            else if (commandArray[0].equals("SYMBOLS")) {
+                SYMBOLS(commandArray);
             }
-
-
-
-
-            else if (commandArray[0].equals("STATES")) //STATES alfanumerik olmali yani hem sayi hme rakam icerecek
-            {
+            else if (commandArray[0].equals("STATES")){
                 STATES(commandArray);
             }
             else if(commandArray[0].equals("INITIAL-STATE") && commandArray.length==2){
@@ -184,7 +177,7 @@ class FSM implements Serializable
                 load(commandArray[1]);
             }
             else if(commandArray[0].equals("EXECUTE")){
-                EXECUTE(commandArray);
+                EXECUTE();
             }
             else {
                 System.out.println("invalid command");
@@ -199,9 +192,9 @@ class FSM implements Serializable
             else if (commandEntered.equals("EXIT")) {
                 EXIT();
             }
-            /*else if (commandEntered.equals("LOG")) {
+            else if (commandEntered.equals("LOG")) {
                 LOG_();
-            }*/
+            }
             else if (commandEntered.equals("STATES")) {
                 STATES_();
             }
@@ -216,8 +209,7 @@ class FSM implements Serializable
                     System.out.println(e3.getMessage());
                 }
             }
-            else if (commandEntered.equals("SYMBOLS")) //OK
-            {
+            else if (commandEntered.equals("SYMBOLS")) {
                 SYMBOLS_();
             }
 
@@ -271,104 +263,64 @@ class FSM implements Serializable
         logging = true;
         FR4list.clear();
     }
-    /*private void LOG_(){
-        try {
-            f_fr4 = new Formatter(fileName+".txt");
-            for (String aa:FR4list){
-                f_fr4.format("%s \n", aa);
-            }
+    private void LOG_(){
 
-        } catch (Exception e) {
-            System.out.println("LOGGING was not enabled");
-            System.out.println("file cannot be created, written, etc");
-            System.out.println(e.getMessage());
-            fr4ekleme("file cannot be created, written, etc");
-        }finally {
-            if(f_fr4!=null){
-                System.out.println("STOPPED LOGGING");
-                fr4ekleme("STOPPED LOGGING");
-                f_fr4.close();
-            }
-        }
-    }*/
-
-
-    private void SYMBOLS(String[] incomingArray) //SYMBOLS, 1, 2, 3 geldi    bu ikisi OK gibi
-    {
-        for(int i = 1; i < incomingArray.length; i++)
-        {
-            String data = incomingArray[i].toUpperCase();
-            if(isalfasayı(data))
-            {
+    }
+    private void SYMBOLS(String[] incomingArray){
+        for(int i=1;i<incomingArray.length;i++){
+            String data=incomingArray[i].toUpperCase();
+            if(isalfasayı(data)){
                 boolean varmıydı=false;
-                for(String aa:symbolsList)
-                {
-                    if(aa.equals(data))
-                    {
+                for(String aa:symbolsList){
+                    if(aa.equals(data)){
                         varmıydı=true;
                         break;
                     }
                 }
-                if(varmıydı)
-                {
+                if(varmıydı){
                     System.out.println(data+" already exists");
                     fr4ekleme(data+" already exists");
-                }
-                else
-                {
+                }else{
                     symbolsList.add(data);
                 }
-            }
-            else
-            {
-                //System.out.println(data+" is not alphanumeric");
+            }else{
+                System.out.println(data+" is not alphanumeric");
                 fr4ekleme(data +" is not alphanumeric");
             }
         }
     }
-    private void SYMBOLS_() //alt cizgi girdi almadan girilen komut demek    OK
-    {
+    private void SYMBOLS_(){
         System.out.print("SYMBOLS: ");
-        for(String aa:symbolsList)
-        {
+        for(String aa:symbolsList){
             System.out.print(aa+" ");
         }
         System.out.println();
     }
-    private void STATES(String[] incomingArray ) // geldi STATES, A, b, 1, c2, //OK
-    {
-        for(int i=1;i< incomingArray.length;i++)
-        {
-            if(isalphanumeric(incomingArray[i].toUpperCase()))
-            {
-                if(statesList.isEmpty())
-                {
+    private void STATES(String[] incomingArray ){
+        for(int i=1;i< incomingArray.length;i++){
+            if(isalphanumeric(incomingArray[i].toUpperCase())){
+                if(statesList.isEmpty()){
                     statesList.add(incomingArray[i].toUpperCase());
                     initialState=incomingArray[i].toUpperCase();
-                    System.out.println(incomingArray[i].toUpperCase()+" set as initial state ");
-                    fr4ekleme(incomingArray[i].toUpperCase()+" set as initial state ");
+                    System.out.println(incomingArray[i].toUpperCase()+" set es initial state ");
+                    fr4ekleme(incomingArray[i].toUpperCase()+" set es initial state ");
                     continue;
                 }
-                boolean varmıydı = false;
-                for(String aa : statesList)
-                {
-                    if(aa.equals(incomingArray[i].toUpperCase()))
-                    {
+                boolean varmıydı=false;
+                for(String aa:statesList){
+                    if(aa.equals(incomingArray[i].toUpperCase())){
                         varmıydı=true;
                         break;
                     }
                 }
-                if(varmıydı)
-                {
+                if(varmıydı){
                     System.out.println(incomingArray[i].toUpperCase()+" already exists");
                     fr4ekleme(incomingArray[i].toUpperCase()+" already exists");
                     continue;
                 }
                 statesList.add(incomingArray[i].toUpperCase());
 
-            }
-            else
-            {
+            }else{
                 System.out.println(incomingArray[i]+" is not alphanumeric");
                 fr4ekleme(incomingArray[i]+" is not alphanumeric");
             }
@@ -377,62 +329,52 @@ class FSM implements Serializable
     private void STATES_()
     {
         System.out.println(statesList);
-    } // OK gibi
-
-    private void INITIAL_STATE() //geldi INITIAL-STATE, q1 //KONTROLE GEL
-    {
+    }
+    private void INITIAL_STATE(){
         String state = commandArray[1].toUpperCase();
 
-        if (!state.matches("[a-zA-Z0-9]+"))
-        {
+        if (!state.matches("[a-zA-Z0-9]+")) {
             System.out.println("Warning: state is not alphanumeric");
             fr4ekleme("Warning: state is not alphanumeric");
             return;
         }
-        if (!statesList.contains(state))
-        {
+        if (!statesList.contains(state)) {
             statesList.add(state);
             System.out.println("Warning: state has not been declared yet, added to list");
             fr4ekleme("Warning: state has not been declared yet, added to list");
         }
         initialState = state;
     }
-    private void FINAL_STATES() //FINAL-STATES, Q1, Q2 geldi what is that BURAYA GEL
-    {
+    private void FINAL_STATES(){
         String states = commandEntered.substring(commandEntered.indexOf(" ") + 1).trim().toUpperCase();
         String[] stateArray = states.split("[,\\s]+"); // hem boşluk hem virgül ile ayırıyor artık
 
-        for (String state : stateArray)
-        {
+        for (String state : stateArray) {
             state = state.trim();
 
-            if (!state.matches("[a-zA-Z0-9]+"))
-            {
+            if (!state.matches("[a-zA-Z0-9]+")) {
                 System.out.println("Warning: invalid final state name: " + state);
                 fr4ekleme("Warning: invalid final state name: " + state);
                 continue;
             }
 
-            if (!statesList.contains(state))
-            {
+            if (!statesList.contains(state)) {
 
                 System.out.println("Warning: final state not declared previously, added to states list: " + state);
                 fr4ekleme("Warning: final state not declared previously, added to states list: " + state);
                 statesList.add(state);
             }
 
-            if (!finalStates.contains(state))
-            {
+            if (!finalStates.contains(state)) {
                 finalStates.add(state);
             }
         }
     }
-    private void TRANSITIONS(String gelenkomut) // gelen komut TRANSTIONS 1 Q2 Q3;
-    {
+    private void TRANSITIONS(String gelenkomut){
         String errorline="";
         boolean varmıydı1=false;
         String fr9line=gelenkomut.substring(11);
-        fr9line=fr9line.trim(); //String[] fr9linedizisi=fr9line.split(",");//a q1 q2//   d e f   k l m
+        fr9line=fr9line.trim();//String[] fr9linedizisi=fr9line.split(",");//a q1 q2//   d e f   k l m
         String[] fr9linedizisi=fr9line.split(",");//a q1 q2//   d e f   k l m
         for(String aa:fr9linedizisi){
             aa=aa.trim();
@@ -449,22 +391,17 @@ class FSM implements Serializable
             if(symbolsList.contains(anlıkdizi[0].toUpperCase()) && statesList.contains(anlıkdizi[1].toUpperCase()) && statesList.contains(anlıkdizi[2].toUpperCase())){
                 String line1=anlıkdizi[0].toUpperCase()+anlıkdizi[1].toUpperCase();
                 String line2=anlıkdizi[2].toUpperCase();
-                varmıydı1=false;
+                 varmıydı1=false;
                 if(transitionsList.isEmpty() && transitionsList1.isEmpty()){
                     transitionsList.add(line1);
                     transitionsList1.add(line2);
                     System.out.println("eklendi");
 
-                }
-                else
-                {
-                    for(String cc:transitionsList)
-                    {
+                }else{
+                    for(String cc:transitionsList){
                         if(cc.equals(line1)){
                             String xx=cc.substring(0,1);
-                            System.out.println(xx);
                             String kk=cc.substring(1,cc.length());
-                            System.out.println(kk);
                             errorline+="transition already exists for <"+xx+","+kk+">. ";
                             int a =transitionsList.indexOf(line1);
                             transitionsList1.set(a,line2);
@@ -472,21 +409,17 @@ class FSM implements Serializable
                             break;
                         }
                     }
-                    if(!varmıydı1)
-                    {
+                    if(!varmıydı1){
                         transitionsList.add(line1);
                         transitionsList1.add(line2);
                         System.out.println("eklendi");
                     }
                 }
-            }
-            else
-            {
+            }else {
                 varmıydı1=true;
             }
         }
-        if(varmıydı1)
-        {
+        if(varmıydı1){
             System.out.println("ERROR:  "+errorline);
         }
     }
@@ -527,6 +460,7 @@ class FSM implements Serializable
         }
         output.append("}\n");
 
+
         String result = output.toString();
         System.out.print(result);
         fr4ekleme(result);
@@ -557,16 +491,30 @@ class FSM implements Serializable
                     writer.write(";\n");
                 }
 
+               
                 if(!transitionsList.isEmpty()) {
-                    writer.write("TRANSITIONS ");
-                    for (int i = 0; i < transitionsList.size(); i++) {
-                        String[] parts = transitionsList.get(i).split("\\s+");
+                    writer.write("TRANSITIONS");
+                    writer.write(" ");
 
-                        if (parts.length == 3) {
-                            writer.write(parts[1] + " " + parts[0] + " " + parts[2]);
-                            if (i < transitionsList.size() - 1) writer.write(", ");
+                    for(int i=0;i<transitionsList.size();i++){
+                        int k=transitionsList.size()-1;
+                        String line="";
+                        line+=transitionsList.get(i).substring(0,1);
+
+                        line+=" ";
+                        line+=transitionsList.get(i).substring(1,transitionsList.get(i).length());
+
+                        line+=" ";
+                        line+=transitionsList1.get(i);
+                        if(k!=i){
+                            line+=",";
+
                         }
+                        writer.write(line);
+
+
                     }
+
                     writer.write(";\n");
                 }
 
@@ -651,9 +599,7 @@ class FSM implements Serializable
             System.out.println("Object loading successful!");
         }
     }
-
-    private void CLEAR()
-    {
+    private void CLEAR(){
         initialState = "";
         statesList.clear();
         symbolsList.clear();
@@ -663,73 +609,61 @@ class FSM implements Serializable
         System.out.println("All FSM data cleared.");
         fr4ekleme("All FSM data cleared.");
     }
-
-    private void EXECUTE(String[] incomingArray)
-    {
-        if(transitionsList1.isEmpty())
-        {
-            System.out.println("Could not find any transition");
-            return;
-        }
-        if(finalStates.isEmpty())
-        {
-            System.out.println("Could not find any final state");
+    private void EXECUTE(){
+        if (commandArray.length != 2) {
+            System.out.println("EXECUTE requires an input string.");
             return;
         }
 
-        String[]anlıkdizi1 = incomingArray[1].split("");
-        String line = "";
-        for (String aa : anlıkdizi1)
-        {
-            if(aa.equals(" "))
-            {
+        String inputString = commandArray[1].toUpperCase();
+        String currentState = initialState;
 
+        System.out.print(currentState + " ");
+        fr4ekleme(currentState);
+
+        for (char symbol : inputString.toCharArray()) {
+            String sym = String.valueOf(symbol);
+            boolean found = false;
+
+            for (String transition : transitionsList) {
+                String[] parts = transition.split("\\s+");
+                if (parts.length != 3) continue;
+
+                if (parts[0].equals(sym) && parts[1].equals(currentState)) {
+                    currentState = parts[2];
+                    System.out.print(currentState + " ");
+                    fr4ekleme(currentState);
+                    found = true;
+                    break;
+                }
             }
-            else
-            {
-                line += aa;
-            }
-        }
-        System.out.println("aa");
-        String[]anlıkdizi = line.split("");
 
-
-        // String anlıkstate=fr7list.getFirst().toUpperCase();
-        String anlıkstate=initialState;
-
-        System.out.print(anlıkstate+" ");
-        for(String aa:anlıkdizi){
-            String abc=aa+anlıkstate;
-            int a=transitionsList.indexOf(abc);
-
-            anlıkstate=transitionsList1.get(a);
-            //anlıkstate=fr9hashmap.get(abc);
-            System.out.print(anlıkstate+" ");
-        }
-        System.out.println("bb");
-        for(String aa:finalStates){
-            if(aa.equals(anlıkstate)){
-                System.out.println("Yes");
+            if (!found) {
+                System.out.println("NO");
+                fr4ekleme("NO");
                 return;
             }
         }
-        System.out.println("No");
-    }
 
+        if (finalStates.contains(currentState)) {
+            System.out.println("YES");
+            fr4ekleme("YES");
+        } else {
+            System.out.println("NO");
+            fr4ekleme("NO");
+        }
+    }
     private void fr4ekleme(String a)
     {
         if(logging){
             FR4list.add(a);
         }
     }
-    public static boolean isalphanumeric(String input)
-    {
-        if(input.length() == 1)
-        {
+    public static boolean isalphanumeric(String input) {
+        if(input.length()==1){
             return false;
         }
-        if(input.matches("[a-zA-Z]+"))
-        {
+        if(input.matches("[a-zA-Z]+")){
             return false;
         }
         if(input.matches("[0-9]+")){
@@ -739,22 +673,10 @@ class FSM implements Serializable
     }
     public static boolean isalfasayı(String input){
         if(input.length()>1){
-            System.out.println(input + " Length must be 1");
             return false;
         }
         return input.matches("[a-zA-Z0-9]+");
     }
-
-    public static boolean isAlphanumericBetter(String input)
-    {
-        if (input == null || input.isEmpty())
-        {
-            return false;
-        }
-        //Tüm karakterler sadece harf veya rakam mı?
-        return input.matches("[a-zA-Z0-9]+");
-    }
-
 
 
     public String getInitialState() {
@@ -816,15 +738,8 @@ class FileAccessException extends Exception
         super(message);
     }
 }
-class InvalidInputException extends RuntimeException
-{
+class InvalidInputException extends RuntimeException {
     public InvalidInputException(String culprit) {
         super("Warning: Invalid Input " + culprit);
     }
 }
-//class InvalidInputException extends RuntimeException
-//{
-//    public InvalidInputException(String culprit) {
-//        super("Warning: Invalid Input " + culprit);
-//    }
-//}
