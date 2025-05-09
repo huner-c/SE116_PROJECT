@@ -5,10 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-
 ///                                  IF CODING IS A ART, THEN I AM THE MONA LISA
-
-
 
 public class Main
 {
@@ -128,7 +125,6 @@ class FSM implements Serializable
     }
     private void processCommand()
     {
-        System.out.println(Arrays.toString(commandArray));
         if(logging){
             fr4ekleme(commandEntered);
         }
@@ -396,7 +392,7 @@ class FSM implements Serializable
                 if(transitionsList.isEmpty() && transitionsList1.isEmpty()){
                     transitionsList.add(line1);
                     transitionsList1.add(line2);
-                    System.out.println("eklendi");
+
 
                 }else{
                     for(String cc:transitionsList){
@@ -413,7 +409,7 @@ class FSM implements Serializable
                     if(!varmıydı1){
                         transitionsList.add(line1);
                         transitionsList1.add(line2);
-                        System.out.println("eklendi");
+
                     }
                 }
             }else {
@@ -608,12 +604,13 @@ class FSM implements Serializable
         symbolsList.clear();
         finalStates.clear();
         transitionsList.clear();
+        //transitionsList1.clear();
 
         System.out.println("All FSM data cleared.");
         fr4ekleme("All FSM data cleared.");
     }
-    private void EXECUTE(String[] incomingArray){
-
+    private void EXECUTE(String[] incomingArray)
+    {
         if(transitionsList1.isEmpty())
         {
             System.out.println("Could not find any transition");
@@ -624,24 +621,79 @@ class FSM implements Serializable
             System.out.println("Could not find any final state");
             return;
         }
-
         String[]anlıkdizi1 = incomingArray[1].split("");
         String line = "";
         for (String aa : anlıkdizi1)
         {
             if(aa.equals(" "))
             {
-
-    }
+            }
             else
-    {
-        line += aa;
+            {
+                line += aa;
+            }
+        }
+        String[]anlıkdizi = line.split("");
+        String anlıkstate=initialState;
+        System.out.print(anlıkstate+" ");
+        for(String aa:anlıkdizi){
+            String abc=aa+anlıkstate;
+            int k=transitionsList.indexOf(abc);
+            anlıkstate=transitionsList1.get(k);
+            System.out.print(anlıkstate+" ");
+        }
+        for(String aa:finalStates){
+            if(aa.equals(anlıkstate)){
+                System.out.println("Yes");
+                return;
+            }
+        }
+        System.out.println("No");
     }
-}
-        System.out.println("aa");
-String[]anlıkdizi = line.split("");
+    private void EXECUTE2(String[] incomingArray){
+        if (incomingArray.length < 2) {
+            System.out.println("Error: No input string provided.");
+            return;
+        }
 
+        String input = incomingArray[1].toUpperCase();
+        String currentState = initialState;
+        ArrayList<String> stateSequence = new ArrayList<>();
+        stateSequence.add(currentState);
+
+        for (int i = 0; i < input.length(); i++) {
+            String symbol = String.valueOf(input.charAt(i));
+
+            if (!symbolsList.contains(symbol)) {
+                System.out.println("ERROR: Symbol '" + symbol + "' is not declared.");
+                return;
+            }
+
+            String transitionKey = symbol + currentState;
+            int index = transitionsList.indexOf(transitionKey);
+            if (index == -1) {
+                System.out.println("NO"); // geçiş bulunamadı
+                return;
+            }
+
+            currentState = transitionsList1.get(index);
+            stateSequence.add(currentState);
+        }
+
+        // Durum sırasını yazdır
+        System.out.print("STATE SEQUENCE: ");
+        for (String s : stateSequence) {
+            System.out.print(s + " ");
+        }
+        System.out.println();
+
+        if (finalStates.contains(currentState)) {
+            System.out.println("YES");
+        } else {
+            System.out.println("NO");
+        }
     }
+
     private void fr4ekleme(String a)
     {
         if(logging){
