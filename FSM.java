@@ -129,16 +129,7 @@ class FSM implements Serializable
     {
 
 
-        String line="";
-        for(String aa:commandArray){
-            line+=aa;
-        }
-        System.out.println(line+";"+comment);
-        System.out.println(logging);
-        if(logging){
-            System.out.println("loggin  true");
-            System.out.println(line+";"+comment);
-        }
+
 
         if(commandArray.length>=2)
         {
