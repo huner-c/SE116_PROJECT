@@ -648,9 +648,8 @@ class FSM implements Serializable
                 int k=transitionsList.indexOf(abc);
                 anlıkstate=transitionsList1.get(k);
             } catch (IndexOutOfBoundsException e) {
-                System.out.println();
-                System.out.println(abc.substring(0,1)+" "+abc.substring(1,abc.length())+" Such a transition has not been defined");
-                fr4ekleme(abc.substring(0,1)+" "+abc.substring(1,abc.length())+" Such a transition has not been defined");
+                System.out.println("NO");
+                
                 return;
             }
 
