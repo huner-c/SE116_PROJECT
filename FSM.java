@@ -111,7 +111,7 @@ class FSM implements Serializable
 
             if (currentLine.contains(";"))
             {
-                
+
                 commandEntered = builder.toString();
                 commandEntered = commandEntered.replaceAll("\n", " ");
                 comment = commandEntered.split(";", 2)[1].trim();
@@ -119,8 +119,8 @@ class FSM implements Serializable
                 commandArray = commandEntered.split("\\s+");
                 processCommand();
                 builder.setLength(0);
-            } 
-            else 
+            }
+            else
             {
                 builder.append(" ");
             }
@@ -178,7 +178,7 @@ class FSM implements Serializable
                 load(commandArray[1]);
             }
             else if(commandArray[0].equals("EXECUTE")){
-                EXECUTE();
+                EXECUTE(commandArray);
             }
             else {
                 System.out.println("invalid command");
@@ -612,49 +612,35 @@ class FSM implements Serializable
         System.out.println("All FSM data cleared.");
         fr4ekleme("All FSM data cleared.");
     }
-    private void EXECUTE(){
-        if (commandArray.length != 2) {
-            System.out.println("EXECUTE requires an input string.");
+    private void EXECUTE(String[] incomingArray){
+
+        if(transitionsList1.isEmpty())
+        {
+            System.out.println("Could not find any transition");
+            return;
+        }
+        if(finalStates.isEmpty())
+        {
+            System.out.println("Could not find any final state");
             return;
         }
 
-        String inputString = commandArray[1].toUpperCase();
-        String currentState = initialState;
+        String[]anlıkdizi1 = incomingArray[1].split("");
+        String line = "";
+        for (String aa : anlıkdizi1)
+        {
+            if(aa.equals(" "))
+            {
 
-        System.out.print(currentState + " ");
-        fr4ekleme(currentState);
+    }
+            else
+    {
+        line += aa;
+    }
+}
+        System.out.println("aa");
+String[]anlıkdizi = line.split("");
 
-        for (char symbol : inputString.toCharArray()) {
-            String sym = String.valueOf(symbol);
-            boolean found = false;
-
-            for (String transition : transitionsList) {
-                String[] parts = transition.split("\\s+");
-                if (parts.length != 3) continue;
-
-                if (parts[0].equals(sym) && parts[1].equals(currentState)) {
-                    currentState = parts[2];
-                    System.out.print(currentState + " ");
-                    fr4ekleme(currentState);
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                System.out.println("NO");
-                fr4ekleme("NO");
-                return;
-            }
-        }
-
-        if (finalStates.contains(currentState)) {
-            System.out.println("YES");
-            fr4ekleme("YES");
-        } else {
-            System.out.println("NO");
-            fr4ekleme("NO");
-        }
     }
     private void fr4ekleme(String a)
     {
