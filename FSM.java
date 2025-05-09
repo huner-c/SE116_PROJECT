@@ -427,43 +427,45 @@ class FSM implements Serializable
     {
         StringBuilder output = new StringBuilder();
 
-        output.append("SYMBOLS {");
-        for (int i = 0; i < symbolsList.size(); i++) {
-            output.append(symbolsList.get(i));
-            if (i < symbolsList.size() - 1) output.append(",");
+        if(commandArray.length==1) {
+            output.append("SYMBOLS {");
+            for (int i = 0; i < symbolsList.size(); i++) {
+                output.append(symbolsList.get(i));
+                if (i < symbolsList.size() - 1) output.append(",");
+            }
+            output.append("}\n");
+
+            output.append("STATES {");
+            for (int i = 0; i < statesList.size(); i++) {
+                output.append(statesList.get(i));
+                if (i < statesList.size() - 1) output.append(",");
+            }
+            output.append("}\n");
+
+            output.append("INITIAL STATE ").append(initialState).append("\n");
+
+            output.append("FINAL STATES {");
+            for (int i = 0; i < finalStates.size(); i++) {
+                output.append(finalStates.get(i));
+                if (i < finalStates.size() - 1) output.append(",");
+            }
+            output.append("}\n");
+
+            output.append("TRANSITIONS {");
+            for (int i = 0; i < transitionsList.size(); i++) {
+                String xx = transitionsList.get(i).substring(0, 1);
+                String kk = transitionsList.get(i).substring(1, transitionsList.get(i).length());
+                output.append(xx + " " + kk + " " + transitionsList1.get(i) + "  ");
+                if (i < transitionsList.size() - 1) output.append(",");
+
+            }
+            output.append("}\n");
+
+
+            String result = output.toString();
+            System.out.print(result);
+            fr4ekleme(result);
         }
-        output.append("}\n");
-
-        output.append("STATES {");
-        for (int i = 0; i < statesList.size(); i++) {
-            output.append(statesList.get(i));
-            if (i < statesList.size() - 1) output.append(",");
-        }
-        output.append("}\n");
-
-        output.append("INITIAL STATE ").append(initialState).append("\n");
-
-        output.append("FINAL STATES {");
-        for (int i = 0; i < finalStates.size(); i++) {
-            output.append(finalStates.get(i));
-            if (i < finalStates.size() - 1) output.append(",");
-        }
-        output.append("}\n");
-
-        output.append("TRANSITIONS {");
-        for (int i = 0; i < transitionsList.size(); i++) {
-            String xx=transitionsList.get(i).substring(0,1);
-            String kk=transitionsList.get(i).substring(1,transitionsList.get(i).length());
-            output.append(xx+" "+kk+" " +transitionsList1.get(i)+"  ");
-            if (i < transitionsList.size() - 1) output.append(",");
-
-        }
-        output.append("}\n");
-
-
-        String result = output.toString();
-        System.out.print(result);
-        fr4ekleme(result);
 
         if (commandArray.length == 2) {
             if(!commandArray[1].endsWith(".txt")) commandArray[1] += ".txt";
