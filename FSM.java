@@ -609,7 +609,7 @@ class FSM implements Serializable
         symbolsList.clear();
         finalStates.clear();
         transitionsList.clear();
-        //transitionsList1.clear();
+        transitionsList1.clear();
 
         System.out.println("All FSM data cleared.");
         fr4ekleme("All FSM data cleared.");
