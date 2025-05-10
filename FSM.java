@@ -59,7 +59,7 @@ class FSM implements Serializable
                 addLOG("\nErrors in the log:");
                 for (String errorMessage : logErrorMessages)
                 {
-                    addLOG(errorMessage); // Hataları tek tek yazdıralım
+                    addLOG(errorMessage);
                 }
             }
             logWriter.close();
@@ -370,7 +370,6 @@ class FSM implements Serializable
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDateTime = now.format(formatter);
-        //addLOG("FSM DESIGNER <Update 06.05 21.10>  "+formattedDateTime);
         System.out.println("FSM DESIGNER <Update FINAL - 1>  "+formattedDateTime);
     }
     private void EXIT()
@@ -381,7 +380,7 @@ class FSM implements Serializable
         }
         System.exit(0);
     }
-    private void SYMBOLSwInput(String[] inputsArray) //[SYMBOLS, 1, 2, 3] gelir
+    private void SYMBOLSwInput(String[] inputsArray)
     {
         for(int i = 1; i < inputsArray.length; i++)
         {
@@ -429,7 +428,7 @@ class FSM implements Serializable
         }
         System.out.println();
     }
-    private void STATESwInput(String[] inputsArray) //[STATES, q1] geliyor
+    private void STATESwInput(String[] inputsArray)
     {
         for(int i = 1; i< inputsArray.length; i++)
         {
@@ -531,7 +530,7 @@ class FSM implements Serializable
     private void FINAL_STATES()
     {
         String states = stringInputs.substring(stringInputs.indexOf(" ") + 1).trim().toUpperCase();
-        String[] stateArray = states.split("[,\\s]+"); // hem boşluk hem virgül ile ayırıyor artık
+        String[] stateArray = states.split("[,\\s]+");
 
         for (String state : stateArray) {
             state = state.trim();
@@ -561,13 +560,13 @@ class FSM implements Serializable
 
         boolean isDeclearedBefore=false;
 
-        String ways = inputLine.substring(11); //TRANSITIONS + " " BU KISMI ATAR GERIYE SAG TARAF KALIR ve trimler bosluk gider
+        String ways = inputLine.substring(11);
         String[] waysArray = ways.trim().split(",");
 
         for(String transition : waysArray)
         {
             transition = transition.trim(); //3 Q1 Q2
-            String[] digits = transition.split(" "); // 3 Q1 Q2 bunu bosluklardan ayiriyor
+            String[] digits = transition.split(" ");
 
             try
             {
@@ -578,8 +577,8 @@ class FSM implements Serializable
 
 
 
-            if(!symbolsList.contains(digits[0].toUpperCase())) //abd error array i aslinda daha once error yoksa ekliyor
-            {                                                     // if de  sembol listte yoksa true donuyor
+            if(!symbolsList.contains(digits[0].toUpperCase()))
+            {                                                     
                 if(!warningsForTransitions.contains("Invalid symbols:" + digits[0].toUpperCase()))
                 {
                     warningsForTransitions.add("Invalid symbols:"+ digits[0].toUpperCase());
@@ -629,7 +628,7 @@ class FSM implements Serializable
                 String uniqueKey = digits[0].toUpperCase() + digits[1].toUpperCase();
                 String targetState = digits[2].toUpperCase();
 
-                if(uniqueKeysList.isEmpty() && targetStatesList.isEmpty()) //ve          || bu veya
+                if(uniqueKeysList.isEmpty() && targetStatesList.isEmpty())
                 {
                     uniqueKeysList.add(uniqueKey);
                     targetStatesList.add(targetState);
