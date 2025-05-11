@@ -370,7 +370,7 @@ class FSM implements Serializable
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String formattedDateTime = now.format(formatter);
-        System.out.println("FSM DESIGNER <Update FINAL - 1>  "+formattedDateTime);
+        System.out.println("FSM DESIGNER <Update FINAL>  "+formattedDateTime);
     }
     private void EXIT()
     {
@@ -577,41 +577,41 @@ class FSM implements Serializable
 
 
 
-            if(!symbolsList.contains(digits[0].toUpperCase()))
-            {                                                     
-                if(!warningsForTransitions.contains("Invalid symbols:" + digits[0].toUpperCase()))
+                if(!symbolsList.contains(digits[0].toUpperCase()))
                 {
-                    warningsForTransitions.add("Invalid symbols:"+ digits[0].toUpperCase());
-                    if(isLogging)
+                    if(!warningsForTransitions.contains("Invalid symbols:" + digits[0].toUpperCase()))
                     {
-                        logErrorMessages.add("Line " + inputCount + ": WARNING " + digits[0].toUpperCase() + " is invalid symbol");
+                        warningsForTransitions.add("Invalid symbols:"+ digits[0].toUpperCase());
+                        if(isLogging)
+                        {
+                            logErrorMessages.add("Line " + inputCount + ": WARNING " + digits[0].toUpperCase() + " is invalid symbol");
+                        }
                     }
                 }
-            }
 
-            if(!statesList.contains(digits[1].toUpperCase()))
-            {
-                if(!warningsForTransitions.contains("Invalid state: "+ digits[1].toUpperCase()))
+                if(!statesList.contains(digits[1].toUpperCase()))
                 {
-                    warningsForTransitions.add("Invalid state: "+ digits[1].toUpperCase());
-                    if(isLogging)
+                    if(!warningsForTransitions.contains("Invalid state: "+ digits[1].toUpperCase()))
                     {
-                        logErrorMessages.add("Line " + inputCount + ": WARNING " + digits[1].toUpperCase() + " is invalid state");
+                        warningsForTransitions.add("Invalid state: "+ digits[1].toUpperCase());
+                        if(isLogging)
+                        {
+                            logErrorMessages.add("Line " + inputCount + ": WARNING " + digits[1].toUpperCase() + " is invalid state");
+                        }
                     }
                 }
-            }
 
-            if(!statesList.contains(digits[2].toUpperCase()))
-            {
-                if(!warningsForTransitions.contains("Invalid state: "+ digits[2].toUpperCase()))
+                if(!statesList.contains(digits[2].toUpperCase()))
                 {
-                    warningsForTransitions.add("Invalid state: "+ digits[2].toUpperCase());
-                    if(isLogging)
+                    if(!warningsForTransitions.contains("Invalid state: "+ digits[2].toUpperCase()))
                     {
-                        logErrorMessages.add("Line " + inputCount + ": WARNING " + digits[2].toUpperCase() + " is invalid state");
+                        warningsForTransitions.add("Invalid state: "+ digits[2].toUpperCase());
+                        if(isLogging)
+                        {
+                            logErrorMessages.add("Line " + inputCount + ": WARNING " + digits[2].toUpperCase() + " is invalid state");
+                        }
                     }
                 }
-            }
             }
             catch (ArrayIndexOutOfBoundsException e7)
             {
@@ -676,6 +676,7 @@ class FSM implements Serializable
         }
         warningsForTransitions.clear();
     }
+
     private void EXECUTE(String[] inputsArray)
     {
         if(uniqueKeysList.isEmpty())
@@ -753,7 +754,7 @@ class FSM implements Serializable
         symbolsList.clear();
         finalStatesList.clear();
         uniqueKeysList.clear();
-        targetStatesList.clear();
+        //targetStatesList.clear();
     }
     private void PRINT()
     {
