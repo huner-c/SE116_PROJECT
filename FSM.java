@@ -675,6 +675,10 @@ class FSM implements Serializable
             }
         }
         warningsForTransitions.clear();
+
+        //System.out.println(targetStatesList);
+        //System.out.println(uniqueKeysList);
+
     }
 
     private void EXECUTE(String[] inputsArray)
@@ -754,7 +758,7 @@ class FSM implements Serializable
         symbolsList.clear();
         finalStatesList.clear();
         uniqueKeysList.clear();
-        //targetStatesList.clear();
+        targetStatesList.clear();
     }
     private void PRINT()
     {
@@ -981,6 +985,8 @@ class FSM implements Serializable
             this.setFinalStatesList(readFSM.getFinalStatesList());
             this.setUniqueKeysList(readFSM.getUniqueKeysList());
             this.setLogging(readFSM.getLogging());
+            this.setTargetStatesList(readFSM.getTargetStatesList());
+
             System.out.println("Object loading successful!");
         }
         else
@@ -1046,10 +1052,13 @@ class FSM implements Serializable
     public void setLogging(boolean logging) {
         this.isLogging = logging;
     }
+    public ArrayList<String> getTargetStatesList() {
+        return targetStatesList;
+    }
+    public void setTargetStatesList(ArrayList<String> targetStatesList) {
+        this.targetStatesList = targetStatesList;
+    }
 }
-
-
-
 
 
 class InvalidFileNameException extends RuntimeException
